@@ -61,16 +61,15 @@
     text-align: center;
   }
   .kotak { max-width: 640px; width: 100%; }
-  .ikon {
-    width: 110px;
-    height: 110px;
+  .foto {
+    display: block;
+    max-width: 100%;
+    max-height: 42vh;
+    width: auto;
     margin: 0 auto 20px;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--danger);
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 110px;
+    border-radius: 16px;
+    border: 4px solid #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
   }
   .kotak h2 { margin: 0 0 14px; font-size: 2.2rem; color: #fff; }
   .kotak p { margin: 0 0 30px; font-size: 1.25rem; }
@@ -181,7 +180,7 @@
 
 <div id="peringatan" class="overlay" role="alertdialog" aria-modal="true" aria-labelledby="judulPeringatan" aria-describedby="isiPeringatan" hidden>
   <div class="kotak">
-    <div class="ikon" aria-hidden="true">!</div>
+    <img class="foto" src="kucing.png" alt="Kucing yang sedang menyipitkan mata">
     <h2 id="judulPeringatan">Kamu keluar dari halaman</h2>
     <p id="isiPeringatan">Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.</p>
     <button type="button" id="btnOke" class="btn-oke">Oke</button>
@@ -436,10 +435,9 @@
     document.dispatchEvent(new Event('peringatan-ditutup'));
   }
 
-  // Dipanggil dari modul kamera. Jika reset = true, jawaban ikut direset.
-  window.tampilPeringatanKamera = function (judul, pesan, reset) {
+  // Dipanggil dari modul kamera. Peringatan kamera tidak mereset jawaban.
+  window.tampilPeringatanKamera = function (judul, pesan) {
     if (peringatanAktif) return;
-    if (reset) resetSemua();
     tampilPeringatan(judul, pesan);
   };
 
@@ -619,10 +617,12 @@
   var JEDA_HP_MS = 500;
   var INTERVAL_DETEKSI_MS = 400;
   var SKOR_MIN_HP = 0.5;
-  var PESAN_KAMERA = 'Eits, mau nyoba foto ya? Gaboleh.';
-  var JUDUL_KAMERA = 'Eits!';
+  var JUDUL_HP = 'Eits!';
+  var PESAN_HP = 'Mau nyoba foto ya? Gaboleh.';
   var JUDUL_WAJAH = 'Kamu kemana?';
-  var PESAN_WAJAH = 'Kok gaada di kamera? Aku reset yah.';
+  var PESAN_WAJAH = 'Kok gaada di kamera?';
+  var JUDUL_DUA_WAJAH = 'Eits!';
+  var PESAN_DUA_WAJAH = 'Ada lebih dari satu wajah di kamera. Kerjakan tugas sendiri ya.';
 
   var video = document.getElementById('preview');
   var statusKamera = document.getElementById('statusKamera');
@@ -642,11 +642,11 @@
     waktuHpTerlihat = 0;
   });
 
-  function picu(judul, pesan, reset) {
+  function picu(judul, pesan) {
     if (terpicu) return;
     terpicu = true;
     if (typeof window.tampilPeringatanKamera === 'function') {
-      window.tampilPeringatanKamera(judul, pesan, reset);
+      window.tampilPeringatanKamera(judul, pesan);
     }
   }
 
@@ -670,13 +670,13 @@
       waktuWajahHilang += INTERVAL_DETEKSI_MS;
       pesanStatus.push('Wajah tidak terlihat (' + Math.round(waktuWajahHilang / 1000) + ' detik).');
       if (waktuWajahHilang >= JEDA_WAJAH_HILANG_MS) {
-        picu(JUDUL_WAJAH, PESAN_WAJAH, true);
+        picu(JUDUL_WAJAH, PESAN_WAJAH);
       }
     } else {
       waktuWajahHilang = 0;
       if (jumlahWajah > 1) {
         pesanStatus.push('Terdeteksi ' + jumlahWajah + ' wajah.');
-        picu(JUDUL_KAMERA, PESAN_KAMERA, false);
+        picu(JUDUL_DUA_WAJAH, PESAN_DUA_WAJAH);
       } else {
         pesanStatus.push('Wajah terdeteksi.');
       }
@@ -686,7 +686,7 @@
       waktuHpTerlihat += INTERVAL_DETEKSI_MS;
       pesanStatus.push('Ponsel terlihat (' + (waktuHpTerlihat / 1000).toFixed(1) + ' detik).');
       if (waktuHpTerlihat >= JEDA_HP_MS) {
-        picu(JUDUL_KAMERA, PESAN_KAMERA, false);
+        picu(JUDUL_HP, PESAN_HP);
       }
     } else {
       waktuHpTerlihat = 0;
