@@ -44,26 +44,49 @@
   }
   header.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
   header.hero p { margin: 0; opacity: .92; }
-  .banner {
-    background: #fdecea;
-    border-left: 4px solid var(--danger);
-    padding: 12px 14px;
-    border-radius: 8px;
-    margin-bottom: 18px;
+
+  /* Peringatan layar penuh */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--danger);
+    color: #fff;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 9999;
+    text-align: center;
   }
-  .banner p { margin: 0; }
-  .banner button {
-    background: none;
-    border: none;
-    font-size: 1.1rem;
-    cursor: pointer;
+  .kotak { max-width: 640px; width: 100%; }
+  .ikon {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #fff;
     color: var(--danger);
-    line-height: 1;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 110px;
   }
+  .kotak h2 { margin: 0 0 14px; font-size: 2.2rem; }
+  .kotak p { margin: 0 0 30px; font-size: 1.25rem; }
+  .btn-oke {
+    background: #fff;
+    color: var(--danger);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 48px;
+    font: inherit;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-oke:hover { filter: brightness(.95); }
+
   section.card {
     background: var(--card);
     border: 1px solid var(--line);
@@ -137,12 +160,17 @@
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div id="banner" class="banner" role="alert" hidden>
-    <p>Kamu meninggalkan halaman, sehingga semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.</p>
-    <button type="button" id="tutupBanner" aria-label="Tutup pemberitahuan">&times;</button>
+<div id="peringatan" class="overlay" role="alertdialog" aria-modal="true" aria-labelledby="judulPeringatan" aria-describedby="isiPeringatan" hidden>
+  <div class="kotak">
+    <div class="ikon" aria-hidden="true">!</div>
+    <h2 id="judulPeringatan">Kamu keluar dari halaman</h2>
+    <p id="isiPeringatan">Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.</p>
+    <button type="button" id="btnOke" class="btn-oke">Oke</button>
   </div>
+</div>
+
+<div class="wrap">
 
   <header class="hero">
     <h1>Praktik Enkripsi Dokumen Sederhana</h1>
@@ -358,9 +386,17 @@
     tampilStatus('');
   }
 
-  function tampilBanner() {
-    document.getElementById('banner').hidden = false;
+  function tampilPeringatan() {
+    var p = document.getElementById('peringatan');
+    p.hidden = false;
     hapusTandaReset();
+    setTimeout(function () {
+      document.getElementById('btnOke').focus();
+    }, 0);
+  }
+
+  function tutupPeringatan() {
+    document.getElementById('peringatan').hidden = true;
   }
 
   /* ---------- pelindung salin ---------- */
@@ -498,7 +534,7 @@
         resetSemua();
         tandaiReset();
       } else if (adaTandaReset()) {
-        tampilBanner();
+        tampilPeringatan();
       }
     });
 
@@ -507,9 +543,7 @@
       tandaiReset();
     });
 
-    document.getElementById('tutupBanner').addEventListener('click', function () {
-      document.getElementById('banner').hidden = true;
-    });
+    document.getElementById('btnOke').addEventListener('click', tutupPeringatan);
   }
 
   load();
@@ -520,7 +554,7 @@
   pasangPelindungSalin();
   pasangDeteksiKeluar();
 
-  if (adaTandaReset()) tampilBanner();
+  if (adaTandaReset()) tampilPeringatan();
 })();
 </script>
 </body>
