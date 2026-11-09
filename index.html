@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Praktik Enkripsi Dokumen Sederhana - Informatika Kelas X</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --ink: #1f2430;
+    --muted: #5b6272;
+    --accent: #1f5fbf;
+    --accent-soft: #e7f0fc;
+    --line: #dde2ec;
+    --ok: #2e7d32;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  header.hero {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  header.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
+  header.hero p { margin: 0; opacity: .92; }
+  section.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+  }
+  section.card h2 { margin: 0 0 10px; font-size: 1.25rem; color: var(--accent); }
+  section.card h3 { margin: 18px 0 6px; font-size: 1.05rem; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); }
+  .note {
+    background: #fff8e1;
+    border-left: 4px solid #f0b400;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  .tip {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  ol li, ul li { margin-bottom: 6px; }
+  label.check { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; cursor: pointer; }
+  label.check input { margin-top: 5px; transform: scale(1.2); }
+  label.check.done span { color: var(--ok); }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  @media (max-width: 600px) { .fields { grid-template-columns: 1fr; } }
+  .fields label { font-size: .9rem; color: var(--muted); display: block; }
+  input[type=text] {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    margin-top: 4px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    resize: vertical;
+    margin-top: 6px;
+  }
+  .q { margin: 14px 0; }
+  .q p { margin: 0 0 4px; font-weight: 600; }
+  .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 6px 8px 6px 0;
+  }
+  .btn.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
+  .btn:hover { filter: brightness(1.05); }
+  #status { margin-top: 8px; font-size: .95rem; color: var(--ok); min-height: 1.4em; }
+  #fallback { display: none; width: 100%; height: 180px; margin-top: 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9rem; }
+  .steps-title { font-weight: 600; margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>Praktik Enkripsi Dokumen Sederhana</h1>
+    <p>Informatika Kelas X &middot; SMA Telkom Bandung &middot; 2 JP (2 x 45 menit) &middot; Kerjakan secara individu</p>
+  </header>
+
+  <section class="card">
+    <h2>Identitas</h2>
+    <div class="fields">
+      <div>
+        <label for="nama">Nama lengkap
+          <input type="text" id="nama" placeholder="Tulis nama lengkapmu">
+        </label>
+      </div>
+      <div>
+        <label for="kelas">Kelas
+          <input type="text" id="kelas" placeholder="Contoh: X-2">
+        </label>
+      </div>
+    </div>
+    <p class="tip">Isianmu tersimpan otomatis di browser ini. Jika kamu membuka halaman ini di perangkat lain, isi ulang namamu.</p>
+  </section>
+
+  <section class="card">
+    <h2>Identitas dan Tujuan</h2>
+    <table>
+      <tr><th>Item</th><th>Keterangan</th></tr>
+      <tr><td>Mata pelajaran</td><td>Informatika</td></tr>
+      <tr><td>Kelas</td><td>X (SMA)</td></tr>
+      <tr><td>Alokasi waktu</td><td>2 JP (2 x 45 menit)</td></tr>
+      <tr><td>Jenis tugas</td><td>Individu</td></tr>
+      <tr><td>Produk</td><td>Dokumen terenkripsi (berkas yang hanya bisa dibuka dengan kata sandi)</td></tr>
+    </table>
+    <p>Setelah praktik ini, kamu mampu menerapkan enkripsi sederhana dan konfigurasi keamanan dasar untuk melindungi data pribadi saat terhubung ke jaringan.</p>
+  </section>
+
+  <section class="card">
+    <h2>Pemantik</h2>
+    <p>Jawab dalam hati sebelum mulai praktik:</p>
+    <ol>
+      <li>Jika kamu mengirim berkas berisi data pribadi lewat WhatsApp atau email, siapa saja yang bisa membacanya?</li>
+      <li>Bagaimana caranya agar berkas itu hanya bisa dibuka oleh orang yang kamu izinkan?</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Konsep Dasar</h2>
+    <p>Enkripsi adalah proses mengacak data dengan kunci tertentu, sehingga hanya orang yang memegang kunci itu yang bisa membacanya. Pada dokumen Word atau PDF, kata sandi berperan sebagai kunci. Pada praktik ini kamu memakai AES-256, standar enkripsi yang banyak dipakai.</p>
+
+    <p><strong>Beberapa istilah yang perlu kamu pahami:</strong></p>
+    <ul>
+      <li><strong>Enkripsi:</strong> proses mengacak data agar hanya bisa dibaca dengan kunci yang benar.</li>
+      <li><strong>Kata sandi (password):</strong> rangkaian karakter rahasia yang dipakai untuk membuka data atau akun.</li>
+      <li><strong>AES-256:</strong> standar enkripsi dengan kunci 256 bit yang banyak dipakai.</li>
+      <li><strong>Autentikasi dua langkah:</strong> verifikasi kedua selain kata sandi, misalnya kode yang dikirim ke ponsel.</li>
+      <li><strong>Wi-Fi publik:</strong> jaringan nirkabel yang banyak dipakai orang, dan keamanannya sering tidak terjamin.</li>
+      <li><strong>Firewall:</strong> penyaring lalu lintas data yang memblokir akses yang tidak diizinkan.</li>
+      <li><strong>WPA2 dan WPA3:</strong> standar keamanan untuk Wi-Fi. WPA3 lebih baru dan lebih kuat dari WPA2.</li>
+    </ul>
+
+    <p><strong>Hal yang perlu kamu ingat:</strong></p>
+    <ul>
+      <li><strong>Kata sandi kuat:</strong> minimal 12 karakter, campuran huruf besar, huruf kecil, angka, dan simbol. Jangan memakai tanggal lahir atau nama sendiri.</li>
+      <li><strong>Jangan menyimpan kata sandi di berkas yang sama</strong> dengan dokumen yang dienkripsi.</li>
+      <li><strong>Wi-Fi publik:</strong> hindari membuka data pribadi saat terhubung ke jaringan yang tidak kamu kenal, karena lalu lintas datamu bisa dipantau.</li>
+      <li><strong>Keamanan perangkat:</strong> kunci layar dengan PIN atau sandi, perbarui sistem, dan aktifkan autentikasi dua langkah pada akun email.</li>
+      <li><strong>Kata sandi yang lupa tidak bisa dipulihkan</strong> pada enkripsi seperti ini. Simpan kata sandi di tempat yang aman, misalnya di manajer kata sandi.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Langkah Praktik</h2>
+    <p>Alat: Microsoft Word, LibreOffice Writer, atau Google Docs, dan 7-Zip (gratis). Nama menu bisa sedikit berbeda tergantung versi aplikasi.</p>
+
+    <h3>Kegiatan A: Enkripsi dokumen di Microsoft Word</h3>
+    <ol>
+      <li>Buka Microsoft Word, lalu pilih <strong>New &gt; Blank document</strong>.</li>
+      <li>Ketik contoh data pribadi, misalnya nama panggilan, kota, dan hobi. Jangan memasukkan data orang lain.</li>
+      <li>Simpan dulu dokumen dengan <strong>File &gt; Save As</strong>. Beri nama berkas, lalu klik <strong>Save</strong>.</li>
+      <li>Klik menu <strong>File</strong>.</li>
+      <li>Klik <strong>Info</strong>.</li>
+      <li>Klik tombol <strong>Protect Document</strong>, lalu pilih <strong>Encrypt with Password</strong>.</li>
+      <li>Pada kotak <em>Encrypt Document</em>, ketik kata sandi yang kuat, lalu klik <strong>OK</strong>.</li>
+      <li>Pada kotak <em>Confirm Password</em>, ketik ulang kata sandi yang sama, lalu klik <strong>OK</strong>.</li>
+      <li>Tekan <strong>Ctrl + S</strong> untuk menyimpan. Jika muncul pesan untuk mengganti berkas, klik <strong>Yes</strong>.</li>
+      <li>Tutup dokumen, lalu buka lagi dari File Explorer. Word akan meminta kata sandi. Jika kamu bisa membukanya dengan kata sandi tersebut, enkripsi berhasil.</li>
+    </ol>
+    <p>Jika kata sandi lupa, dokumen tidak bisa dibuka kembali. Simpan kata sandimu di tempat yang aman.</p>
+    <p>Catatan untuk LibreOffice Writer: pilih <strong>File &gt; Save As</strong>, centang <strong>Save with password</strong>, lalu isi kata sandi.</p>
+
+    <h3>Alternatif: Google Docs</h3>
+    <p>Google Docs tidak memiliki menu Protect Document atau fitur kata sandi untuk dokumen. Menu itu hanya ada di Microsoft Word. Karena itu, cara ini memakai dua langkah: unduh dokumen, lalu enkripsi berkasnya.</p>
+    <ol>
+      <li>Buka dokumen di Google Docs, lalu pilih <strong>File &gt; Download &gt; Microsoft Word (.docx)</strong>.</li>
+      <li>Simpan berkas hasil unduhan di folder yang kamu pilih.</li>
+      <li>Enkripsi berkas tersebut dengan langkah pada Kegiatan B.</li>
+    </ol>
+
+    <h3>Kegiatan B: Enkripsi berkas dengan 7-Zip</h3>
+    <ol>
+      <li>Pastikan 7-Zip sudah terpasang. Jika belum, unduh dan pasang dari situs resminya.</li>
+      <li>Siapkan satu berkas yang akan dienkripsi, misalnya dokumen dari Kegiatan A.</li>
+      <li>Klik kanan berkas, pilih <strong>7-Zip</strong>, lalu klik <strong>Add to archive...</strong>.</li>
+      <li>Pada jendela <em>Add to Archive</em>, di kolom <em>Archive format</em>, pilih <strong>zip</strong> atau <strong>7z</strong>.</li>
+      <li>Pada bagian <em>Encryption</em>, isi kolom <em>Enter password</em> dengan kata sandi yang kuat.</li>
+      <li>Isi kolom <em>Reenter password</em> dengan kata sandi yang sama.</li>
+      <li>Pada kolom <em>Encryption method</em>, pilih <strong>AES-256</strong>.</li>
+      <li>Klik <strong>OK</strong> dan tunggu proses selesai. Berkas arsip baru akan muncul.</li>
+      <li>Uji hasilnya: klik dua kali arsip, lalu coba buka berkas di dalamnya. Aplikasi akan meminta kata sandi. Jika berkas bisa dibuka dengan kata sandi itu, enkripsi berhasil.</li>
+      <li>Hapus berkas asli yang belum terenkripsi jika tidak diperlukan, agar data tidak tersimpan dalam bentuk biasa.</li>
+    </ol>
+    <p>Catatan: kolom <em>Encryption method</em> hanya tersedia jika format yang dipilih adalah zip atau 7z.</p>
+
+    <h3>Kegiatan C: Periksa konfigurasi keamanan dasar</h3>
+    <p>Centang setiap item yang sudah kamu terapkan di perangkatmu:</p>
+    <div id="checks"></div>
+  </section>
+
+  <section class="card">
+    <h2>LKPD</h2>
+    <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan otomatis di browser ini.</p>
+    <div id="lkpd"></div>
+  </section>
+
+  <section class="card">
+    <h2>Pengumpulan Tugas</h2>
+    <p>Ada dua cara mengumpulkan tugas:</p>
+    <ol>
+      <li><strong>Salin jawaban</strong>: klik tombol di bawah untuk menyalin semua jawaban LKPD beserta nama dan kelasmu. Tempel hasilnya ke Google Docs baru, lalu simpan dengan nama <em>Nama_Kelas_Tugas9</em>.</li>
+      <li><strong>Unggah berkas</strong>: unggah berkas terenkripsi hasil Kegiatan A atau B ke folder pengumpulan. Beri nama berkas dengan format <em>Nama_Kelas_Tugas9</em>.</li>
+    </ol>
+
+    <div class="note">
+      Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
+    </div>
+
+    <button class="btn" id="btnSalin" type="button">Salin semua jawaban</button>
+    <a class="btn secondary" href="https://drive.google.com/drive/folders/1pBxeUxyXEABxa7vUT7v7X-ZajqizeV31?usp=sharing" target="_blank" rel="noopener">Buka folder pengumpulan</a>
+    <div id="status" aria-live="polite"></div>
+    <textarea id="fallback" readonly aria-label="Teks jawaban untuk disalin manual"></textarea>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var KEY = 'bahan-enkripsi-tugas9-v1';
+
+  var PERTANYAAN = [
+    'Apa fungsi kata sandi pada dokumen yang sudah dienkripsi?',
+    'Mengapa kata sandi "password123" tidak aman? Tulis dua alasan.',
+    'Sebutkan dua risiko jika kamu membuka data pribadi saat terhubung ke Wi-Fi publik.',
+    'Berkas tugasmu berisi data pribadi dan akan dikirim ke guru. Jelaskan langkah yang kamu pilih agar hanya guru yang bisa membukanya, dan alasanmu memilih langkah itu.',
+    'Tuliskan urutan langkah enkripsi dokumen Word, mulai dari menu File sampai dokumen tersimpan.'
+  ];
+
+  var CEKLIS = [
+    'Layar terkunci dengan PIN atau kata sandi',
+    'Sistem operasi dan aplikasi sudah diperbarui',
+    'Firewall perangkat aktif',
+    'Jaringan Wi-Fi rumah memakai WPA2 atau WPA3',
+    'Autentikasi dua langkah aktif pada akun email',
+    'Tidak membuka data pribadi saat terhubung ke Wi-Fi publik'
+  ];
+
+  var state = { nama: '', kelas: '', checks: [], jawaban: [] };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        if (s && typeof s === 'object') state = Object.assign(state, s);
+      }
+    } catch (e) { /* penyimpanan tidak tersedia; lanjut tanpa menyimpan */ }
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* abaikan */ }
+  }
+
+  function esc(t) {
+    return String(t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function buatCekLis() {
+    var wadah = document.getElementById('checks');
+    var html = '';
+    CEKLIS.forEach(function (teks, i) {
+      var cek = !!state.checks[i];
+      html += '<label class="check' + (cek ? ' done' : '') + '">' +
+        '<input type="checkbox" data-check="' + i + '"' + (cek ? ' checked' : '') + '>' +
+        '<span>' + esc(teks) + '</span></label>';
+    });
+    wadah.innerHTML = html;
+    wadah.addEventListener('change', function (e) {
+      var t = e.target;
+      if (t && t.matches('input[type=checkbox]')) {
+        var i = Number(t.getAttribute('data-check'));
+        state.checks[i] = t.checked;
+        t.parentNode.classList.toggle('done', t.checked);
+        save();
+      }
+    });
+  }
+
+  function buatLkpd() {
+    var wadah = document.getElementById('lkpd');
+    var html = '';
+    PERTANYAAN.forEach(function (q, i) {
+      html += '<div class="q"><p>' + (i + 1) + '. ' + esc(q) + '</p>' +
+        '<textarea data-q="' + i + '" aria-label="Jawaban nomor ' + (i + 1) + '">' +
+        esc(state.jawaban[i] || '') + '</textarea></div>';
+    });
+    wadah.innerHTML = html;
+    wadah.addEventListener('input', function (e) {
+      var t = e.target;
+      if (t && t.tagName === 'TEXTAREA') {
+        state.jawaban[Number(t.getAttribute('data-q'))] = t.value;
+        save();
+      }
+    });
+  }
+
+  function bindIdentitas() {
+    var nama = document.getElementById('nama');
+    var kelas = document.getElementById('kelas');
+    nama.value = state.nama || '';
+    kelas.value = state.kelas || '';
+    nama.addEventListener('input', function () { state.nama = nama.value; save(); });
+    kelas.addEventListener('input', function () { state.kelas = kelas.value; save(); });
+  }
+
+  function teksJawaban() {
+    var baris = [];
+    baris.push('Nama: ' + (state.nama || '-'));
+    baris.push('Kelas: ' + (state.kelas || '-'));
+    baris.push('Tugas: Praktik Enkripsi Dokumen Sederhana');
+    baris.push('');
+    PERTANYAAN.forEach(function (q, i) {
+      baris.push((i + 1) + '. ' + q);
+      baris.push('Jawaban: ' + ((state.jawaban[i] || '').trim() || '-'));
+      baris.push('');
+    });
+    return baris.join('\n');
+  }
+
+  function tampilStatus(pesan) {
+    document.getElementById('status').textContent = pesan;
+  }
+
+  function bindSalin() {
+    document.getElementById('btnSalin').addEventListener('click', function () {
+      var teks = teksJawaban();
+      var area = document.getElementById('fallback');
+      var salinManual = function () {
+        area.style.display = 'block';
+        area.value = teks;
+        area.removeAttribute('readonly');
+        area.focus();
+        area.select();
+        area.setAttribute('readonly', 'readonly');
+        tampilStatus('Salin teks di kotak di bawah secara manual (Ctrl + C).');
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(teks).then(function () {
+            tampilStatus('Jawaban sudah disalin. Tempel ke Google Docs baru, lalu unggah ke folder pengumpulan.');
+          }, salinManual);
+        } else {
+          salinManual();
+        }
+      } catch (e) {
+        salinManual();
+      }
+    });
+  }
+
+  load();
+  bindIdentitas();
+  buatCekLis();
+  buatLkpd();
+  bindSalin();
+})();
+</script>
+</body>
+</html>
