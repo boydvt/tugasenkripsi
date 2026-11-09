@@ -14,15 +14,25 @@
     --accent-soft: #e7f0fc;
     --line: #dde2ec;
     --ok: #2e7d32;
+    --danger: #c62828;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     background: var(--bg);
     color: var(--ink);
     line-height: 1.6;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  @media print { body { display: none; } }
   .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
   header.hero {
     background: var(--accent);
@@ -33,6 +43,26 @@
   }
   header.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
   header.hero p { margin: 0; opacity: .92; }
+  .banner {
+    background: #fdecea;
+    border-left: 4px solid var(--danger);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .banner p { margin: 0; }
+  .banner button {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--danger);
+    line-height: 1;
+  }
   section.card {
     background: var(--card);
     border: 1px solid var(--line);
@@ -103,11 +133,15 @@
   .btn:hover { filter: brightness(1.05); }
   #status { margin-top: 8px; font-size: .95rem; color: var(--ok); min-height: 1.4em; }
   #fallback { display: none; width: 100%; height: 180px; margin-top: 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9rem; }
-  .steps-title { font-weight: 600; margin-top: 14px; }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <div id="banner" class="banner" role="alert" hidden>
+    <p>Kamu meninggalkan halaman, sehingga semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.</p>
+    <button type="button" id="tutupBanner" aria-label="Tutup pemberitahuan">&times;</button>
+  </div>
 
   <header class="hero">
     <h1>Praktik Enkripsi Dokumen Sederhana</h1>
@@ -128,7 +162,7 @@
         </label>
       </div>
     </div>
-    <p class="tip">Isianmu tersimpan otomatis di browser ini. Jika kamu membuka halaman ini di perangkat lain, isi ulang namamu.</p>
+    <p class="tip">Isianmu tersimpan sementara di browser ini. Jika kamu meninggalkan halaman, semua isian akan direset.</p>
   </section>
 
   <section class="card">
@@ -228,7 +262,7 @@
 
   <section class="card">
     <h2>LKPD</h2>
-    <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan otomatis di browser ini.</p>
+    <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan sementara selama halaman ini terbuka.</p>
     <div id="lkpd"></div>
   </section>
 
@@ -241,7 +275,7 @@
     </ol>
 
     <div class="note">
-      Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
+      Klik <strong>Salin jawaban</strong> sebelum membuka folder pengumpulan. Membuka tab lain akan mereset semua jawaban di halaman ini. Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
     </div>
 
     <button class="btn" id="btnSalin" type="button">Salin semua jawaban</button>
@@ -255,6 +289,7 @@
 <script>
 (function () {
   var KEY = 'bahan-enkripsi-tugas9-v1';
+  var FLAG = 'bahan-enkripsi-tugas9-reset';
 
   var PERTANYAAN = [
     'Apa fungsi kata sandi pada dokumen yang sudah dienkripsi?',
@@ -275,6 +310,8 @@
 
   var state = { nama: '', kelas: '', checks: [], jawaban: [] };
 
+  /* ---------- penyimpanan ---------- */
+
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
@@ -282,12 +319,76 @@
         var s = JSON.parse(raw);
         if (s && typeof s === 'object') state = Object.assign(state, s);
       }
-    } catch (e) { /* penyimpanan tidak tersedia; lanjut tanpa menyimpan */ }
+    } catch (e) { /* penyimpanan tidak tersedia */ }
   }
 
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* abaikan */ }
   }
+
+  function tandaiReset() {
+    try { sessionStorage.setItem(FLAG, '1'); } catch (e) { /* abaikan */ }
+  }
+
+  function adaTandaReset() {
+    try { return sessionStorage.getItem(FLAG) === '1'; } catch (e) { return false; }
+  }
+
+  function hapusTandaReset() {
+    try { sessionStorage.removeItem(FLAG); } catch (e) { /* abaikan */ }
+  }
+
+  /* ---------- reset ---------- */
+
+  function resetSemua() {
+    state = { nama: '', kelas: '', checks: [], jawaban: [] };
+    try { localStorage.removeItem(KEY); } catch (e) { /* abaikan */ }
+
+    document.getElementById('nama').value = '';
+    document.getElementById('kelas').value = '';
+    document.querySelectorAll('#checks input').forEach(function (c) {
+      c.checked = false;
+      c.parentNode.classList.remove('done');
+    });
+    document.querySelectorAll('#lkpd textarea').forEach(function (t) {
+      t.value = '';
+    });
+    document.getElementById('fallback').style.display = 'none';
+    tampilStatus('');
+  }
+
+  function tampilBanner() {
+    document.getElementById('banner').hidden = false;
+    hapusTandaReset();
+  }
+
+  /* ---------- pelindung salin ---------- */
+
+  function isField(t) {
+    return !!(t && t.closest && t.closest('input, textarea'));
+  }
+
+  function pasangPelindungSalin() {
+    document.addEventListener('copy', function (e) {
+      if (!isField(e.target)) e.preventDefault();
+    });
+    document.addEventListener('cut', function (e) {
+      if (!isField(e.target)) e.preventDefault();
+    });
+    document.addEventListener('contextmenu', function (e) {
+      if (!isField(e.target)) e.preventDefault();
+    });
+    document.addEventListener('dragstart', function (e) {
+      e.preventDefault();
+    });
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      var kombinasi = (e.ctrlKey || e.metaKey) && ['c', 'x', 'a', 'u', 's', 'p'].indexOf(k) !== -1;
+      if (kombinasi && !isField(e.target)) e.preventDefault();
+    });
+  }
+
+  /* ---------- tampilan ---------- */
 
   function esc(t) {
     return String(t).replace(/[&<>"']/g, function (c) {
@@ -388,11 +489,37 @@
     });
   }
 
+  /* ---------- deteksi meninggalkan halaman ---------- */
+
+  function pasangDeteksiKeluar() {
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') {
+        resetSemua();
+        tandaiReset();
+      } else if (adaTandaReset()) {
+        tampilBanner();
+      }
+    });
+
+    window.addEventListener('pagehide', function () {
+      resetSemua();
+      tandaiReset();
+    });
+
+    document.getElementById('tutupBanner').addEventListener('click', function () {
+      document.getElementById('banner').hidden = true;
+    });
+  }
+
   load();
   bindIdentitas();
   buatCekLis();
   buatLkpd();
   bindSalin();
+  pasangPelindungSalin();
+  pasangDeteksiKeluar();
+
+  if (adaTandaReset()) tampilBanner();
 })();
 </script>
 </body>
