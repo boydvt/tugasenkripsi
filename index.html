@@ -72,7 +72,7 @@
     font-weight: 700;
     line-height: 110px;
   }
-  .kotak h2 { margin: 0 0 14px; font-size: 2.2rem; }
+  .kotak h2 { margin: 0 0 14px; font-size: 2.2rem; color: #fff; }
   .kotak p { margin: 0 0 30px; font-size: 1.25rem; }
   .btn-oke {
     background: #fff;
@@ -86,6 +86,23 @@
     cursor: pointer;
   }
   .btn-oke:hover { filter: brightness(.95); }
+
+  /* Kamera kecil di pojok */
+  .kamera-kecil {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    width: 160px;
+    z-index: 50;
+  }
+  #preview {
+    width: 100%;
+    border-radius: 10px;
+    background: #000;
+    transform: scaleX(-1);
+    border: 2px solid #fff;
+    box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  }
 
   section.card {
     background: var(--card);
@@ -113,6 +130,7 @@
     border-radius: 8px;
     margin: 12px 0;
   }
+  .info { font-size: .9rem; color: var(--muted); }
   ol li, ul li { margin-bottom: 6px; }
   label.check { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; cursor: pointer; }
   label.check input { margin-top: 5px; transform: scale(1.2); }
@@ -170,12 +188,23 @@
   </div>
 </div>
 
+<div class="kamera-kecil">
+  <video id="preview" autoplay muted playsinline hidden></video>
+</div>
+
 <div class="wrap">
 
   <header class="hero">
     <h1>Praktik Enkripsi Dokumen Sederhana</h1>
     <p>Informatika Kelas X &middot; SMA Telkom Bandung &middot; 2 JP (2 x 45 menit) &middot; Kerjakan secara individu</p>
   </header>
+
+  <section class="card">
+    <h2>Pemantauan kamera</h2>
+    <p class="info">Halaman ini memakai kamera untuk memantau wajah dan mendeteksi ponsel selama kamu mengerjakan tugas. Video tidak direkam dan tidak dikirim ke mana pun. Semua pemrosesan terjadi di browser ini.</p>
+    <button class="btn" id="btnKamera" type="button" hidden>Coba aktifkan kamera lagi</button>
+    <div id="statusKamera" class="info">Meminta izin kamera...</div>
+  </section>
 
   <section class="card">
     <h2>Identitas</h2>
@@ -338,6 +367,7 @@
   ];
 
   var state = { nama: '', kelas: '', checks: [], jawaban: [] };
+  var peringatanAktif = false;
 
   /* ---------- penyimpanan ---------- */
 
@@ -386,10 +416,15 @@
     tampilStatus('');
   }
 
-  function tampilPeringatan() {
-    var p = document.getElementById('peringatan');
-    p.hidden = false;
+  /* ---------- peringatan layar penuh ---------- */
+
+  function tampilPeringatan(judul, pesan) {
+    if (peringatanAktif) return;
+    peringatanAktif = true;
     hapusTandaReset();
+    document.getElementById('judulPeringatan').textContent = judul;
+    document.getElementById('isiPeringatan').textContent = pesan;
+    document.getElementById('peringatan').hidden = false;
     setTimeout(function () {
       document.getElementById('btnOke').focus();
     }, 0);
@@ -397,7 +432,16 @@
 
   function tutupPeringatan() {
     document.getElementById('peringatan').hidden = true;
+    peringatanAktif = false;
+    document.dispatchEvent(new Event('peringatan-ditutup'));
   }
+
+  // Dipanggil dari modul kamera. Jika reset = true, jawaban ikut direset.
+  window.tampilPeringatanKamera = function (judul, pesan, reset) {
+    if (peringatanAktif) return;
+    if (reset) resetSemua();
+    tampilPeringatan(judul, pesan);
+  };
 
   /* ---------- pelindung salin ---------- */
 
@@ -534,7 +578,11 @@
         resetSemua();
         tandaiReset();
       } else if (adaTandaReset()) {
-        tampilPeringatan();
+        peringatanAktif = false;
+        tampilPeringatan(
+          'Kamu keluar dari halaman',
+          'Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.'
+        );
       }
     });
 
@@ -554,8 +602,153 @@
   pasangPelindungSalin();
   pasangDeteksiKeluar();
 
-  if (adaTandaReset()) tampilPeringatan();
+  if (adaTandaReset()) {
+    tampilPeringatan(
+      'Kamu keluar dari halaman',
+      'Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.'
+    );
+  }
 })();
+</script>
+
+<script type="module">
+  import { FaceDetector, ObjectDetector, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm';
+
+  /* ---------- PENGATURAN ---------- */
+  var JEDA_WAJAH_HILANG_MS = 2000;
+  var JEDA_HP_MS = 500;
+  var INTERVAL_DETEKSI_MS = 400;
+  var SKOR_MIN_HP = 0.5;
+  var PESAN_KAMERA = 'Eits, mau nyoba foto ya? Gaboleh.';
+  var JUDUL_KAMERA = 'Eits!';
+  var JUDUL_WAJAH = 'Kamu kemana?';
+  var PESAN_WAJAH = 'Kok gaada di kamera? Aku reset yah.';
+
+  var video = document.getElementById('preview');
+  var statusKamera = document.getElementById('statusKamera');
+  var btnKamera = document.getElementById('btnKamera');
+
+  var faceDetector = null;
+  var objectDetector = null;
+  var stream = null;
+  var timer = null;
+  var waktuWajahHilang = 0;
+  var waktuHpTerlihat = 0;
+  var terpicu = false;
+
+  document.addEventListener('peringatan-ditutup', function () {
+    terpicu = false;
+    waktuWajahHilang = 0;
+    waktuHpTerlihat = 0;
+  });
+
+  function picu(judul, pesan, reset) {
+    if (terpicu) return;
+    terpicu = true;
+    if (typeof window.tampilPeringatanKamera === 'function') {
+      window.tampilPeringatanKamera(judul, pesan, reset);
+    }
+  }
+
+  function cekKamera() {
+    if (!faceDetector || !objectDetector || video.readyState < 2) return;
+    var ts = performance.now();
+
+    var hasilWajah = faceDetector.detectForVideo(video, ts);
+    var jumlahWajah = hasilWajah.detections.length;
+
+    var hasilObjek = objectDetector.detectForVideo(video, ts);
+    var adaHp = hasilObjek.detections.some(function (d) {
+      return d.categories.some(function (c) {
+        return c.categoryName === 'cell phone' && c.score >= SKOR_MIN_HP;
+      });
+    });
+
+    var pesanStatus = [];
+
+    if (jumlahWajah === 0) {
+      waktuWajahHilang += INTERVAL_DETEKSI_MS;
+      pesanStatus.push('Wajah tidak terlihat (' + Math.round(waktuWajahHilang / 1000) + ' detik).');
+      if (waktuWajahHilang >= JEDA_WAJAH_HILANG_MS) {
+        picu(JUDUL_WAJAH, PESAN_WAJAH, true);
+      }
+    } else {
+      waktuWajahHilang = 0;
+      if (jumlahWajah > 1) {
+        pesanStatus.push('Terdeteksi ' + jumlahWajah + ' wajah.');
+        picu(JUDUL_KAMERA, PESAN_KAMERA, false);
+      } else {
+        pesanStatus.push('Wajah terdeteksi.');
+      }
+    }
+
+    if (adaHp) {
+      waktuHpTerlihat += INTERVAL_DETEKSI_MS;
+      pesanStatus.push('Ponsel terlihat (' + (waktuHpTerlihat / 1000).toFixed(1) + ' detik).');
+      if (waktuHpTerlihat >= JEDA_HP_MS) {
+        picu(JUDUL_KAMERA, PESAN_KAMERA, false);
+      }
+    } else {
+      waktuHpTerlihat = 0;
+    }
+
+    statusKamera.textContent = pesanStatus.join(' ');
+  }
+
+  async function siapkanDeteksi() {
+    var vision = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+    );
+    faceDetector = await FaceDetector.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'
+      },
+      runningMode: 'VIDEO',
+      minDetectionConfidence: 0.5
+    });
+    objectDetector = await ObjectDetector.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite'
+      },
+      runningMode: 'VIDEO',
+      scoreThreshold: SKOR_MIN_HP,
+      maxResults: 5
+    });
+  }
+
+  async function mulaiKamera() {
+    btnKamera.hidden = true;
+    statusKamera.textContent = 'Meminta izin kamera...';
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      statusKamera.textContent = 'Browser ini tidak mendukung kamera. Gunakan Chrome atau Edge.';
+      btnKamera.hidden = false;
+      return;
+    }
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+      video.srcObject = stream;
+      video.hidden = false;
+      statusKamera.textContent = 'Memuat model deteksi...';
+      await siapkanDeteksi();
+      await video.play();
+      statusKamera.textContent = 'Kamera aktif. Mendeteksi wajah dan ponsel...';
+      timer = setInterval(cekKamera, INTERVAL_DETEKSI_MS);
+    } catch (err) {
+      statusKamera.textContent = 'Kamera tidak bisa dibuka: ' + (err && err.message ? err.message : err);
+      btnKamera.hidden = false;
+    }
+  }
+
+  btnKamera.addEventListener('click', mulaiKamera);
+
+  window.addEventListener('pagehide', function () {
+    if (timer) clearInterval(timer);
+    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+  });
+
+  mulaiKamera();
 </script>
 </body>
 </html>
