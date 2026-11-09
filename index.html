@@ -4,27 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Praktik Enkripsi Dokumen Sederhana - Informatika Kelas X</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5fbf'/%3E%3Cpath d='M22 28v-6a10 10 0 0 1 20 0v6' fill='none' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='5' fill='white'/%3E%3Ccircle cx='32' cy='40' r='3.5' fill='%231f5fbf'/%3E%3Crect x='30.5' y='40' width='3' height='7' rx='1.5' fill='%231f5fbf'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23171717'/%3E%3Cpath d='M22 28v-6a10 10 0 0 1 20 0v6' fill='none' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='6' fill='white'/%3E%3Ccircle cx='32' cy='40' r='3.5' fill='%23171717'/%3E%3Crect x='30.5' y='40' width='3' height='7' rx='1.5' fill='%23171717'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f7fb;
-    --card: #ffffff;
-    --ink: #1f2430;
-    --muted: #5b6272;
-    --accent: #1f5fbf;
-    --accent-soft: #e7f0fc;
-    --line: #dde2ec;
-    --ok: #2e7d32;
-    --danger: #c62828;
+    --ink: #111111;
+    --muted: #525252;
+    --glass: rgba(255, 255, 255, 0.72);
+    --glass-soft: rgba(245, 245, 245, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --line: rgba(0, 0, 0, 0.12);
+    --grad: linear-gradient(135deg, #262626 0%, #000000 100%);
+    --ok: #111111;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
+
+  html, body { min-height: 100%; }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    background: var(--bg);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     color: var(--ink);
-    line-height: 1.6;
+    line-height: 1.65;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(0, 0, 0, 0.035) 0%, transparent 42%),
+      radial-gradient(circle at 88% 12%, rgba(0, 0, 0, 0.03) 0%, transparent 38%),
+      radial-gradient(circle at 60% 95%, rgba(0, 0, 0, 0.04) 0%, transparent 45%),
+      linear-gradient(160deg, #ffffff 0%, #fafafa 50%, #f2f2f2 100%);
+    background-attachment: fixed;
+    -webkit-touch-callout: auto;
+  }
+  /* Anti-salin hanya aktif di halaman 2 (LKPD) */
+  body[data-halaman="2"] {
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
@@ -34,16 +47,267 @@
     user-select: text;
   }
   @media print { body { display: none; } }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  .glass {
+    position: relative;
+    overflow: hidden;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 18px 50px rgba(0, 0, 0, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  }
+  /* sorotan cahaya yang mengikuti kursor */
+  .glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.75), transparent 60%);
+    opacity: 0;
+    transition: opacity .3s ease;
+  }
+  .glass:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 0, 0, 0.18);
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.08),
+      0 30px 70px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  .glass:hover::after { opacity: 1; }
+  .glass:active { transform: translateY(-1px) scale(.995); }
+  .kamera-kecil.glass:hover { transform: none; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px 18px 80px; }
+
+  .page-info { margin-bottom: 18px; }
+
+  /* Hero */
   header.hero {
-    background: var(--accent);
-    color: #fff;
-    border-radius: 14px;
-    padding: 24px;
+    padding: 28px 28px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip {
+    font-size: .8rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #111111;
+    color: #ffffff;
+    letter-spacing: .02em;
+  }
+  header.hero h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.6rem, 4vw, 2.3rem);
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(90deg, #000000 0%, #404040 60%, #737373 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header.hero p { margin: 0; color: var(--muted); }
+
+  /* Cards */
+  section.card {
+    padding: 24px 24px;
     margin-bottom: 20px;
   }
-  header.hero h1 { margin: 0 0 6px; font-size: 1.6rem; }
-  header.hero p { margin: 0; opacity: .92; }
+  section.card h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  section.card h3 { margin: 22px 0 8px; font-size: 1.05rem; font-weight: 700; color: #262626; }
+  .info { font-size: .92rem; color: var(--muted); }
+  ol li, ul li { margin-bottom: 8px; }
+  ol, ul { padding-left: 22px; }
+  strong { color: #000; }
+  em { color: #262626; font-style: normal; font-weight: 700; text-decoration: underline; text-decoration-color: rgba(0,0,0,.25); text-underline-offset: 3px; }
+
+  table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 10px 0; overflow: hidden; border-radius: 16px; border: 1px solid var(--line); }
+  th, td { padding: 11px 14px; text-align: left; vertical-align: top; }
+  th { background: #111111; color: #ffffff; font-weight: 800; }
+  td { background: rgba(255, 255, 255, 0.9); border-top: 1px solid var(--line); }
+
+  .tip, .note {
+    padding: 14px 16px 14px 22px;
+    border-radius: 18px;
+    margin: 14px 0;
+    background: var(--glass-soft);
+    border: 1px solid var(--glass-border);
+    position: relative;
+  }
+  .tip::before, .note::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 14px; bottom: 14px;
+    width: 4px;
+    border-radius: 4px;
+    background: #111111;
+  }
+
+  /* Checklist */
+  label.check {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+  }
+  label.check:hover { background: #ffffff; border-color: rgba(0,0,0,.25); }
+  label.check input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 7px;
+    border: 2px solid #111111;
+    display: grid;
+    place-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    background: #ffffff;
+    transition: all .2s;
+  }
+  label.check input::before {
+    content: "";
+    width: 11px; height: 11px;
+    transform: scale(0);
+    transition: transform .15s;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    background: #ffffff;
+  }
+  label.check input:checked { background: #111111; border-color: #111111; }
+  label.check input:checked::before { transform: scale(1); }
+  label.check.done { border-color: #111111; }
+  label.check.done span { color: #000; font-weight: 700; }
+
+  /* Form fields */
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+  @media (max-width: 600px) { .fields { grid-template-columns: 1fr; } }
+  .fields label { font-size: .88rem; color: var(--muted); display: block; font-weight: 600; }
+  input[type=text], textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+    color: #111111;
+    font: inherit;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  input[type=text]::placeholder, textarea::placeholder { color: rgba(0, 0, 0, 0.4); }
+  input[type=text]:focus, textarea:focus {
+    border-color: #111111;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+  }
+  textarea { min-height: 100px; resize: vertical; }
+  .q { margin: 16px 0; }
+  .q p { margin: 0 0 4px; font-weight: 700; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 999px;
+    padding: 13px 22px;
+    font: inherit;
+    font-weight: 800;
+    color: #fff;
+    background: var(--grad);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    text-decoration: none;
+    margin: 6px 8px 6px 0;
+    transition: transform .15s, box-shadow .2s, filter .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28); }
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+  .btn.secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #111111;
+    border: 1px solid #111111;
+    box-shadow: none;
+  }
+  .btn.secondary:hover { background: #111111; color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+
+  .nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  #status {
+    margin-top: 12px;
+    font-size: .95rem;
+    font-weight: 700;
+    color: #111111;
+    min-height: 1.5em;
+  }
+  #fallback {
+    display: none;
+    width: 100%;
+    height: 180px;
+    margin-top: 12px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: .9rem;
+  }
+
+  /* Kamera kecil */
+  .kamera-kecil {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    width: 170px;
+    padding: 6px;
+    z-index: 50;
+    border-radius: 22px;
+  }
+  #preview {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+    background: #000;
+    transform: scaleX(-1);
+  }
+
+  /* Pemantauan kamera */
+  .status-pill {
+    display: inline-block;
+    font-size: .88rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #111111;
+    color: #ffffff;
+    margin-top: 6px;
+  }
 
   /* Peringatan layar penuh */
   .overlay {
@@ -51,296 +315,261 @@
     inset: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--danger);
-    color: #fff;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
-    z-index: 9999;
     text-align: center;
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
-  .kotak { max-width: 960px; width: 100%; }
+  .kotak {
+    max-width: 960px;
+    width: 100%;
+    padding: 34px 28px;
+    border-radius: 32px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    backdrop-filter: blur(22px) saturate(170%);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+  }
   .foto {
     display: block;
-    width: min(90vw, 760px);
+    width: min(88vw, 720px);
     height: auto;
-    max-height: 62vh;
-    margin: 0 auto 20px;
+    max-height: 58vh;
+    margin: 0 auto 22px;
     object-fit: contain;
-    border-radius: 16px;
-    border: 4px solid #fff;
-    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    border-radius: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
   }
-  .kotak h2 { margin: 0 0 14px; font-size: 2.2rem; color: #fff; }
-  .kotak p { margin: 0 0 30px; font-size: 1.25rem; }
-  .btn-oke {
-    background: #fff;
-    color: var(--danger);
-    border: none;
-    border-radius: 12px;
-    padding: 16px 48px;
-    font: inherit;
-    font-size: 1.3rem;
-    font-weight: 700;
-    cursor: pointer;
+  .kotak h2 {
+    margin: 0 0 10px;
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    font-weight: 800;
+    color: #000000;
   }
-  .btn-oke:hover { filter: brightness(.95); }
-
-  /* Kamera kecil di pojok */
-  .kamera-kecil {
-    position: fixed;
-    right: 12px;
-    bottom: 12px;
-    width: 160px;
-    z-index: 50;
-  }
-  #preview {
-    width: 100%;
-    border-radius: 10px;
-    background: #000;
-    transform: scaleX(-1);
-    border: 2px solid #fff;
-    box-shadow: 0 4px 14px rgba(0,0,0,.25);
-  }
-
-  section.card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 20px 22px;
-    margin-bottom: 18px;
-  }
-  section.card h2 { margin: 0 0 10px; font-size: 1.25rem; color: var(--accent); }
-  section.card h3 { margin: 18px 0 6px; font-size: 1.05rem; }
-  table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
-  th { background: var(--accent-soft); }
-  .note {
-    background: #fff8e1;
-    border-left: 4px solid #f0b400;
-    padding: 10px 12px;
-    border-radius: 8px;
-    margin: 12px 0;
-  }
-  .tip {
-    background: var(--accent-soft);
-    border-left: 4px solid var(--accent);
-    padding: 10px 12px;
-    border-radius: 8px;
-    margin: 12px 0;
-  }
-  .info { font-size: .9rem; color: var(--muted); }
-  ol li, ul li { margin-bottom: 6px; }
-  label.check { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; cursor: pointer; }
-  label.check input { margin-top: 5px; transform: scale(1.2); }
-  label.check.done span { color: var(--ok); }
-  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
-  @media (max-width: 600px) { .fields { grid-template-columns: 1fr; } }
-  .fields label { font-size: .9rem; color: var(--muted); display: block; }
-  input[type=text] {
-    width: 100%;
-    padding: 9px 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font: inherit;
-    margin-top: 4px;
-  }
-  textarea {
-    width: 100%;
-    min-height: 90px;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    font: inherit;
-    resize: vertical;
-    margin-top: 6px;
-  }
-  .q { margin: 14px 0; }
-  .q p { margin: 0 0 4px; font-weight: 600; }
-  .btn {
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 18px;
-    font: inherit;
+  .kotak p {
+    margin: 0 0 28px;
+    font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+    color: #262626;
     font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    margin: 6px 8px 6px 0;
   }
-  .btn.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
-  .btn:hover { filter: brightness(1.05); }
-  #status { margin-top: 8px; font-size: .95rem; color: var(--ok); min-height: 1.4em; }
-  #fallback { display: none; width: 100%; height: 180px; margin-top: 10px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9rem; }
+  .btn-oke {
+    border: none;
+    border-radius: 999px;
+    padding: 16px 56px;
+    font: inherit;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: #111111;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    transition: transform .15s;
+  }
+  .btn-oke:hover { transform: scale(1.04); }
+
+  @media (max-width: 600px) {
+    .kamera-kecil { width: 120px; }
+    section.card { padding: 20px; }
+    header.hero { padding: 22px; }
+  }
 </style>
 </head>
-<body>
+<body data-halaman="1">
 
 <div id="peringatan" class="overlay" role="alertdialog" aria-modal="true" aria-labelledby="judulPeringatan" aria-describedby="isiPeringatan" hidden>
   <div class="kotak">
     <img class="foto" src="kucing.gif" alt="Kucing yang sedang menyipitkan mata">
     <h2 id="judulPeringatan">Kamu keluar dari halaman</h2>
     <p id="isiPeringatan">Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.</p>
-    <button type="button" id="btnOke" class="btn-oke">Oke</button>
+    <button type="button" id="btnOke" class="btn-oke">Oke, paham</button>
   </div>
 </div>
 
-<div class="kamera-kecil">
+<div class="kamera-kecil glass" id="kameraKecil" hidden>
   <video id="preview" autoplay muted playsinline hidden></video>
 </div>
 
 <div class="wrap">
 
-  <header class="hero">
-    <h1>Praktik Enkripsi Dokumen Sederhana</h1>
-    <p>Informatika Kelas X &middot; SMA Telkom Bandung &middot; 2 JP (2 x 45 menit) &middot; Kerjakan secara individu</p>
-  </header>
+  <div class="chip-row page-info">
+    <span class="chip" id="stepInfo">Halaman 1 dari 2</span>
+  </div>
 
-  <section class="card">
-    <h2>Pemantauan kamera</h2>
-    <p class="info">Halaman ini memakai kamera untuk memantau wajah dan mendeteksi ponsel selama kamu mengerjakan tugas. Video tidak direkam dan tidak dikirim ke mana pun. Semua pemrosesan terjadi di browser ini.</p>
-    <button class="btn" id="btnKamera" type="button" hidden>Coba aktifkan kamera lagi</button>
-    <div id="statusKamera" class="info">Meminta izin kamera...</div>
-  </section>
+  <!-- ================= HALAMAN 1: MATERI & KEGIATAN ================= -->
+  <div id="page1">
 
-  <section class="card">
-    <h2>Identitas</h2>
-    <div class="fields">
-      <div>
-        <label for="nama">Nama lengkap
-          <input type="text" id="nama" placeholder="Tulis nama lengkapmu">
-        </label>
+    <header class="hero glass">
+      <div class="chip-row">
+        <span class="chip">Informatika</span>
+        <span class="chip">Kelas X</span>
+        <span class="chip">2 JP &middot; 90 menit</span>
+        <span class="chip">Individu</span>
       </div>
-      <div>
-        <label for="kelas">Kelas
-          <input type="text" id="kelas" placeholder="Contoh: X-2">
-        </label>
+      <h1>Praktik Enkripsi Dokumen Sederhana</h1>
+      <p>SMA Telkom Bandung &middot; Lindungi data pribadimu, mulai dari dokumenmu sendiri.</p>
+    </header>
+
+    <section class="card glass">
+      <h2>🪪 Identitas</h2>
+      <div class="fields">
+        <div>
+          <label for="nama">Nama lengkap
+            <input type="text" id="nama" placeholder="Tulis nama lengkapmu">
+          </label>
+        </div>
+        <div>
+          <label for="kelas">Kelas
+            <input type="text" id="kelas" placeholder="Contoh: X-2">
+          </label>
+        </div>
       </div>
+      <p class="tip info">Isian nama dan kelas dipakai untuk menyalin jawaban di halaman 2.</p>
+    </section>
+
+    <section class="card glass">
+      <h2>🎯 Identitas dan Tujuan</h2>
+      <table>
+        <tr><th>Item</th><th>Keterangan</th></tr>
+        <tr><td>Mata pelajaran</td><td>Informatika</td></tr>
+        <tr><td>Kelas</td><td>X (SMA)</td></tr>
+        <tr><td>Alokasi waktu</td><td>2 JP (2 x 45 menit)</td></tr>
+        <tr><td>Jenis tugas</td><td>Individu</td></tr>
+        <tr><td>Produk</td><td>Dokumen terenkripsi (berkas yang hanya bisa dibuka dengan kata sandi)</td></tr>
+      </table>
+      <p>Setelah praktik ini, kamu mampu menerapkan enkripsi sederhana dan konfigurasi keamanan dasar untuk melindungi data pribadi saat terhubung ke jaringan.</p>
+    </section>
+
+    <section class="card glass">
+      <h2>💭 Pemantik</h2>
+      <p>Jawab dalam hati sebelum mulai praktik:</p>
+      <ol>
+        <li>Jika kamu mengirim berkas berisi data pribadi lewat WhatsApp atau email, siapa saja yang bisa membacanya?</li>
+        <li>Bagaimana caranya agar berkas itu hanya bisa dibuka oleh orang yang kamu izinkan?</li>
+      </ol>
+    </section>
+
+    <section class="card glass">
+      <h2>📚 Konsep Dasar</h2>
+      <p>Enkripsi adalah proses mengacak data dengan kunci tertentu, sehingga hanya orang yang memegang kunci itu yang bisa membacanya. Pada dokumen Word atau PDF, kata sandi berperan sebagai kunci. Pada praktik ini kamu memakai AES-256, standar enkripsi yang banyak dipakai.</p>
+
+      <p><strong>Beberapa istilah yang perlu kamu pahami:</strong></p>
+      <ul>
+        <li><strong>Enkripsi:</strong> proses mengacak data agar hanya bisa dibaca dengan kunci yang benar.</li>
+        <li><strong>Kata sandi (password):</strong> rangkaian karakter rahasia yang dipakai untuk membuka data atau akun.</li>
+        <li><strong>AES-256:</strong> standar enkripsi dengan kunci 256 bit yang banyak dipakai.</li>
+        <li><strong>Autentikasi dua langkah:</strong> verifikasi kedua selain kata sandi, misalnya kode yang dikirim ke ponsel.</li>
+        <li><strong>Wi-Fi publik:</strong> jaringan nirkabel yang banyak dipakai orang, dan keamanannya sering tidak terjamin.</li>
+        <li><strong>Firewall:</strong> penyaring lalu lintas data yang memblokir akses yang tidak diizinkan.</li>
+        <li><strong>WPA2 dan WPA3:</strong> standar keamanan untuk Wi-Fi. WPA3 lebih baru dan lebih kuat dari WPA2.</li>
+      </ul>
+
+      <p><strong>Hal yang perlu kamu ingat:</strong></p>
+      <ul>
+        <li><strong>Kata sandi kuat:</strong> minimal 12 karakter, campuran huruf besar, huruf kecil, angka, dan simbol. Jangan memakai tanggal lahir atau nama sendiri.</li>
+        <li><strong>Jangan menyimpan kata sandi di berkas yang sama</strong> dengan dokumen yang dienkripsi.</li>
+        <li><strong>Wi-Fi publik:</strong> hindari membuka data pribadi saat terhubung ke jaringan yang tidak kamu kenal, karena lalu lintas datamu bisa dipantau.</li>
+        <li><strong>Keamanan perangkat:</strong> kunci layar dengan PIN atau sandi, perbarui sistem, dan aktifkan autentikasi dua langkah pada akun email.</li>
+        <li><strong>Kata sandi yang lupa tidak bisa dipulihkan</strong> pada enkripsi seperti ini. Simpan kata sandi di tempat yang aman, misalnya di manajer kata sandi.</li>
+      </ul>
+    </section>
+
+    <section class="card glass">
+      <h2>🛠️ Langkah Praktik</h2>
+      <p>Alat: Microsoft Word, LibreOffice Writer, atau Google Docs, dan 7-Zip (gratis). Nama menu bisa sedikit berbeda tergantung versi aplikasi.</p>
+
+      <h3>Kegiatan A: Enkripsi dokumen di Microsoft Word</h3>
+      <ol>
+        <li>Buka Microsoft Word, lalu pilih <strong>New &gt; Blank document</strong>.</li>
+        <li>Ketik contoh data pribadi, misalnya nama panggilan, kota, dan hobi. Jangan memasukkan data orang lain.</li>
+        <li>Simpan dulu dokumen dengan <strong>File &gt; Save As</strong>. Beri nama berkas, lalu klik <strong>Save</strong>.</li>
+        <li>Klik menu <strong>File</strong>.</li>
+        <li>Klik <strong>Info</strong>.</li>
+        <li>Klik tombol <strong>Protect Document</strong>, lalu pilih <strong>Encrypt with Password</strong>.</li>
+        <li>Pada kotak <em>Encrypt Document</em>, ketik kata sandi yang kuat, lalu klik <strong>OK</strong>.</li>
+        <li>Pada kotak <em>Confirm Password</em>, ketik ulang kata sandi yang sama, lalu klik <strong>OK</strong>.</li>
+        <li>Tekan <strong>Ctrl + S</strong> untuk menyimpan. Jika muncul pesan untuk mengganti berkas, klik <strong>Yes</strong>.</li>
+        <li>Tutup dokumen, lalu buka lagi dari File Explorer. Word akan meminta kata sandi. Jika kamu bisa membukanya dengan kata sandi tersebut, enkripsi berhasil.</li>
+      </ol>
+      <p>Jika kata sandi lupa, dokumen tidak bisa dibuka kembali. Simpan kata sandimu di tempat yang aman.</p>
+      <p>Catatan untuk LibreOffice Writer: pilih <strong>File &gt; Save As</strong>, centang <strong>Save with password</strong>, lalu isi kata sandi.</p>
+
+      <h3>Alternatif: Google Docs</h3>
+      <p>Google Docs tidak memiliki menu Protect Document atau fitur kata sandi untuk dokumen. Menu itu hanya ada di Microsoft Word. Karena itu, cara ini memakai dua langkah: unduh dokumen, lalu enkripsi berkasnya.</p>
+      <ol>
+        <li>Buka dokumen di Google Docs, lalu pilih <strong>File &gt; Download &gt; Microsoft Word (.docx)</strong>.</li>
+        <li>Simpan berkas hasil unduhan di folder yang kamu pilih.</li>
+        <li>Enkripsi berkas tersebut dengan langkah pada Kegiatan B.</li>
+      </ol>
+
+      <h3>Kegiatan B: Enkripsi berkas dengan 7-Zip</h3>
+      <ol>
+        <li>Pastikan 7-Zip sudah terpasang. Jika belum, unduh dan pasang dari situs resminya.</li>
+        <li>Siapkan satu berkas yang akan dienkripsi, misalnya dokumen dari Kegiatan A.</li>
+        <li>Klik kanan berkas, pilih <strong>7-Zip</strong>, lalu klik <strong>Add to archive...</strong>.</li>
+        <li>Pada jendela <em>Add to Archive</em>, di kolom <em>Archive format</em>, pilih <strong>zip</strong> atau <strong>7z</strong>.</li>
+        <li>Pada bagian <em>Encryption</em>, isi kolom <em>Enter password</em> dengan kata sandi yang kuat.</li>
+        <li>Isi kolom <em>Reenter password</em> dengan kata sandi yang sama.</li>
+        <li>Pada kolom <em>Encryption method</em>, pilih <strong>AES-256</strong>.</li>
+        <li>Klik <strong>OK</strong> dan tunggu proses selesai. Berkas arsip baru akan muncul.</li>
+        <li>Uji hasilnya: klik dua kali arsip, lalu coba buka berkas di dalamnya. Aplikasi akan meminta kata sandi. Jika berkas bisa dibuka dengan kata sandi itu, enkripsi berhasil.</li>
+        <li>Hapus berkas asli yang belum terenkripsi jika tidak diperlukan, agar data tidak tersimpan dalam bentuk biasa.</li>
+      </ol>
+      <p>Catatan: kolom <em>Encryption method</em> hanya tersedia jika format yang dipilih adalah zip atau 7z.</p>
+
+      <h3>Kegiatan C: Periksa konfigurasi keamanan dasar</h3>
+      <p>Centang setiap item yang sudah kamu terapkan di perangkatmu:</p>
+      <div id="checks"></div>
+    </section>
+
+    <div class="nav-row">
+      <button class="btn" id="btnKeLkpd" type="button">Lanjut ke LKPD →</button>
     </div>
-    <p class="tip">Isianmu tersimpan sementara di browser ini. Jika kamu meninggalkan halaman, semua isian akan direset.</p>
-  </section>
+  </div>
 
-  <section class="card">
-    <h2>Identitas dan Tujuan</h2>
-    <table>
-      <tr><th>Item</th><th>Keterangan</th></tr>
-      <tr><td>Mata pelajaran</td><td>Informatika</td></tr>
-      <tr><td>Kelas</td><td>X (SMA)</td></tr>
-      <tr><td>Alokasi waktu</td><td>2 JP (2 x 45 menit)</td></tr>
-      <tr><td>Jenis tugas</td><td>Individu</td></tr>
-      <tr><td>Produk</td><td>Dokumen terenkripsi (berkas yang hanya bisa dibuka dengan kata sandi)</td></tr>
-    </table>
-    <p>Setelah praktik ini, kamu mampu menerapkan enkripsi sederhana dan konfigurasi keamanan dasar untuk melindungi data pribadi saat terhubung ke jaringan.</p>
-  </section>
+  <!-- ================= HALAMAN 2: LKPD & PENGUMPULAN ================= -->
+  <div id="page2" hidden>
 
-  <section class="card">
-    <h2>Pemantik</h2>
-    <p>Jawab dalam hati sebelum mulai praktik:</p>
-    <ol>
-      <li>Jika kamu mengirim berkas berisi data pribadi lewat WhatsApp atau email, siapa saja yang bisa membacanya?</li>
-      <li>Bagaimana caranya agar berkas itu hanya bisa dibuka oleh orang yang kamu izinkan?</li>
-    </ol>
-  </section>
+    <section class="card glass">
+      <h2>📷 Pemantauan kamera</h2>
+      <p class="info">Kamera dipakai untuk memantau wajah dan mendeteksi ponsel selama kamu mengerjakan LKPD. Video tidak direkam dan tidak dikirim ke mana pun. Semua pemrosesan terjadi di browser ini.</p>
+      <button class="btn" id="btnKamera" type="button" hidden>Coba aktifkan kamera lagi</button>
+      <div id="statusKamera" class="status-pill">Meminta izin kamera...</div>
+    </section>
 
-  <section class="card">
-    <h2>Konsep Dasar</h2>
-    <p>Enkripsi adalah proses mengacak data dengan kunci tertentu, sehingga hanya orang yang memegang kunci itu yang bisa membacanya. Pada dokumen Word atau PDF, kata sandi berperan sebagai kunci. Pada praktik ini kamu memakai AES-256, standar enkripsi yang banyak dipakai.</p>
+    <section class="card glass">
+      <h2>✍️ LKPD</h2>
+      <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan sementara selama halaman ini terbuka.</p>
+      <div id="lkpd"></div>
+    </section>
 
-    <p><strong>Beberapa istilah yang perlu kamu pahami:</strong></p>
-    <ul>
-      <li><strong>Enkripsi:</strong> proses mengacak data agar hanya bisa dibaca dengan kunci yang benar.</li>
-      <li><strong>Kata sandi (password):</strong> rangkaian karakter rahasia yang dipakai untuk membuka data atau akun.</li>
-      <li><strong>AES-256:</strong> standar enkripsi dengan kunci 256 bit yang banyak dipakai.</li>
-      <li><strong>Autentikasi dua langkah:</strong> verifikasi kedua selain kata sandi, misalnya kode yang dikirim ke ponsel.</li>
-      <li><strong>Wi-Fi publik:</strong> jaringan nirkabel yang banyak dipakai orang, dan keamanannya sering tidak terjamin.</li>
-      <li><strong>Firewall:</strong> penyaring lalu lintas data yang memblokir akses yang tidak diizinkan.</li>
-      <li><strong>WPA2 dan WPA3:</strong> standar keamanan untuk Wi-Fi. WPA3 lebih baru dan lebih kuat dari WPA2.</li>
-    </ul>
+    <section class="card glass">
+      <h2>📤 Pengumpulan Tugas</h2>
+      <p>Ada dua cara mengumpulkan tugas:</p>
+      <ol>
+        <li><strong>Salin jawaban</strong>: klik tombol di bawah untuk menyalin semua jawaban LKPD beserta nama dan kelasmu. Tempel hasilnya ke Google Docs baru, lalu simpan dengan nama <em>Nama_Kelas_Tugas9</em>.</li>
+        <li><strong>Unggah berkas</strong>: unggah berkas terenkripsi hasil Kegiatan A atau B ke folder pengumpulan. Beri nama berkas dengan format <em>Nama_Kelas_Tugas9</em>.</li>
+      </ol>
 
-    <p><strong>Hal yang perlu kamu ingat:</strong></p>
-    <ul>
-      <li><strong>Kata sandi kuat:</strong> minimal 12 karakter, campuran huruf besar, huruf kecil, angka, dan simbol. Jangan memakai tanggal lahir atau nama sendiri.</li>
-      <li><strong>Jangan menyimpan kata sandi di berkas yang sama</strong> dengan dokumen yang dienkripsi.</li>
-      <li><strong>Wi-Fi publik:</strong> hindari membuka data pribadi saat terhubung ke jaringan yang tidak kamu kenal, karena lalu lintas datamu bisa dipantau.</li>
-      <li><strong>Keamanan perangkat:</strong> kunci layar dengan PIN atau sandi, perbarui sistem, dan aktifkan autentikasi dua langkah pada akun email.</li>
-      <li><strong>Kata sandi yang lupa tidak bisa dipulihkan</strong> pada enkripsi seperti ini. Simpan kata sandi di tempat yang aman, misalnya di manajer kata sandi.</li>
-    </ul>
-  </section>
+      <div class="note info">
+        Klik <strong>Salin jawaban</strong> sebelum membuka folder pengumpulan. Membuka tab lain akan mereset semua jawaban di halaman ini. Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
+      </div>
 
-  <section class="card">
-    <h2>Langkah Praktik</h2>
-    <p>Alat: Microsoft Word, LibreOffice Writer, atau Google Docs, dan 7-Zip (gratis). Nama menu bisa sedikit berbeda tergantung versi aplikasi.</p>
+      <button class="btn" id="btnSalin" type="button">📋 Salin semua jawaban</button>
+      <a class="btn secondary" href="https://drive.google.com/drive/folders/1H8WkP0tdATxJFOPfDST-vaYDBB8KTWh3?usp=sharing" target="_blank" rel="noopener">📁 Buka folder pengumpulan</a>
+      <div id="status" aria-live="polite"></div>
+      <textarea id="fallback" readonly aria-label="Teks jawaban untuk disalin manual"></textarea>
+    </section>
 
-    <h3>Kegiatan A: Enkripsi dokumen di Microsoft Word</h3>
-    <ol>
-      <li>Buka Microsoft Word, lalu pilih <strong>New &gt; Blank document</strong>.</li>
-      <li>Ketik contoh data pribadi, misalnya nama panggilan, kota, dan hobi. Jangan memasukkan data orang lain.</li>
-      <li>Simpan dulu dokumen dengan <strong>File &gt; Save As</strong>. Beri nama berkas, lalu klik <strong>Save</strong>.</li>
-      <li>Klik menu <strong>File</strong>.</li>
-      <li>Klik <strong>Info</strong>.</li>
-      <li>Klik tombol <strong>Protect Document</strong>, lalu pilih <strong>Encrypt with Password</strong>.</li>
-      <li>Pada kotak <em>Encrypt Document</em>, ketik kata sandi yang kuat, lalu klik <strong>OK</strong>.</li>
-      <li>Pada kotak <em>Confirm Password</em>, ketik ulang kata sandi yang sama, lalu klik <strong>OK</strong>.</li>
-      <li>Tekan <strong>Ctrl + S</strong> untuk menyimpan. Jika muncul pesan untuk mengganti berkas, klik <strong>Yes</strong>.</li>
-      <li>Tutup dokumen, lalu buka lagi dari File Explorer. Word akan meminta kata sandi. Jika kamu bisa membukanya dengan kata sandi tersebut, enkripsi berhasil.</li>
-    </ol>
-    <p>Jika kata sandi lupa, dokumen tidak bisa dibuka kembali. Simpan kata sandimu di tempat yang aman.</p>
-    <p>Catatan untuk LibreOffice Writer: pilih <strong>File &gt; Save As</strong>, centang <strong>Save with password</strong>, lalu isi kata sandi.</p>
-
-    <h3>Alternatif: Google Docs</h3>
-    <p>Google Docs tidak memiliki menu Protect Document atau fitur kata sandi untuk dokumen. Menu itu hanya ada di Microsoft Word. Karena itu, cara ini memakai dua langkah: unduh dokumen, lalu enkripsi berkasnya.</p>
-    <ol>
-      <li>Buka dokumen di Google Docs, lalu pilih <strong>File &gt; Download &gt; Microsoft Word (.docx)</strong>.</li>
-      <li>Simpan berkas hasil unduhan di folder yang kamu pilih.</li>
-      <li>Enkripsi berkas tersebut dengan langkah pada Kegiatan B.</li>
-    </ol>
-
-    <h3>Kegiatan B: Enkripsi berkas dengan 7-Zip</h3>
-    <ol>
-      <li>Pastikan 7-Zip sudah terpasang. Jika belum, unduh dan pasang dari situs resminya.</li>
-      <li>Siapkan satu berkas yang akan dienkripsi, misalnya dokumen dari Kegiatan A.</li>
-      <li>Klik kanan berkas, pilih <strong>7-Zip</strong>, lalu klik <strong>Add to archive...</strong>.</li>
-      <li>Pada jendela <em>Add to Archive</em>, di kolom <em>Archive format</em>, pilih <strong>zip</strong> atau <strong>7z</strong>.</li>
-      <li>Pada bagian <em>Encryption</em>, isi kolom <em>Enter password</em> dengan kata sandi yang kuat.</li>
-      <li>Isi kolom <em>Reenter password</em> dengan kata sandi yang sama.</li>
-      <li>Pada kolom <em>Encryption method</em>, pilih <strong>AES-256</strong>.</li>
-      <li>Klik <strong>OK</strong> dan tunggu proses selesai. Berkas arsip baru akan muncul.</li>
-      <li>Uji hasilnya: klik dua kali arsip, lalu coba buka berkas di dalamnya. Aplikasi akan meminta kata sandi. Jika berkas bisa dibuka dengan kata sandi itu, enkripsi berhasil.</li>
-      <li>Hapus berkas asli yang belum terenkripsi jika tidak diperlukan, agar data tidak tersimpan dalam bentuk biasa.</li>
-    </ol>
-    <p>Catatan: kolom <em>Encryption method</em> hanya tersedia jika format yang dipilih adalah zip atau 7z.</p>
-
-    <h3>Kegiatan C: Periksa konfigurasi keamanan dasar</h3>
-    <p>Centang setiap item yang sudah kamu terapkan di perangkatmu:</p>
-    <div id="checks"></div>
-  </section>
-
-  <section class="card">
-    <h2>LKPD</h2>
-    <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan sementara selama halaman ini terbuka.</p>
-    <div id="lkpd"></div>
-  </section>
-
-  <section class="card">
-    <h2>Pengumpulan Tugas</h2>
-    <p>Ada dua cara mengumpulkan tugas:</p>
-    <ol>
-      <li><strong>Salin jawaban</strong>: klik tombol di bawah untuk menyalin semua jawaban LKPD beserta nama dan kelasmu. Tempel hasilnya ke Google Docs baru, lalu simpan dengan nama <em>Nama_Kelas_Tugas9</em>.</li>
-      <li><strong>Unggah berkas</strong>: unggah berkas terenkripsi hasil Kegiatan A atau B ke folder pengumpulan. Beri nama berkas dengan format <em>Nama_Kelas_Tugas9</em>.</li>
-    </ol>
-
-    <div class="note">
-      Klik <strong>Salin jawaban</strong> sebelum membuka folder pengumpulan. Membuka tab lain akan mereset semua jawaban di halaman ini. Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
+    <div class="nav-row">
+      <button class="btn secondary" id="btnKembali" type="button">← Kembali ke materi</button>
     </div>
-
-    <button class="btn" id="btnSalin" type="button">Salin semua jawaban</button>
-    <a class="btn secondary" href="https://drive.google.com/drive/folders/1H8WkP0tdATxJFOPfDST-vaYDBB8KTWh3?usp=sharing" target="_blank" rel="noopener">Buka folder pengumpulan</a>
-    <div id="status" aria-live="polite"></div>
-    <textarea id="fallback" readonly aria-label="Teks jawaban untuk disalin manual"></textarea>
-  </section>
+  </div>
 
 </div>
 
@@ -369,6 +598,11 @@
   var state = { nama: '', kelas: '', checks: [], jawaban: [] };
   var peringatanAktif = false;
 
+  // Pengamanan (peringatan, reset, anti-salin) hanya aktif di halaman 2
+  function kunciAktif() {
+    return document.body.dataset.halaman === '2';
+  }
+
   /* ---------- penyimpanan ---------- */
 
   function load() {
@@ -395,6 +629,18 @@
 
   function hapusTandaReset() {
     try { sessionStorage.removeItem(FLAG); } catch (e) { /* abaikan */ }
+  }
+
+  /* ---------- pindah halaman ---------- */
+
+  function tampilHalaman(n) {
+    document.body.dataset.halaman = String(n);
+    document.getElementById('page1').hidden = n !== 1;
+    document.getElementById('page2').hidden = n !== 2;
+    document.getElementById('kameraKecil').hidden = n !== 2;
+    document.getElementById('stepInfo').textContent = 'Halaman ' + n + ' dari 2';
+    window.scrollTo(0, 0);
+    document.dispatchEvent(new CustomEvent('halaman-berubah', { detail: n }));
   }
 
   /* ---------- reset ---------- */
@@ -436,13 +682,14 @@
     document.dispatchEvent(new Event('peringatan-ditutup'));
   }
 
-  // Dipanggil dari modul kamera. Peringatan kamera tidak mereset jawaban.
+  // Dipanggil dari modul kamera. Hanya berfungsi di halaman 2 dan tidak mereset jawaban.
   window.tampilPeringatanKamera = function (judul, pesan) {
+    if (!kunciAktif()) return;
     if (peringatanAktif) return;
     tampilPeringatan(judul, pesan);
   };
 
-  /* ---------- pelindung salin ---------- */
+  /* ---------- pelindung salin (halaman 2) ---------- */
 
   function isField(t) {
     return !!(t && t.closest && t.closest('input, textarea'));
@@ -450,18 +697,22 @@
 
   function pasangPelindungSalin() {
     document.addEventListener('copy', function (e) {
+      if (!kunciAktif()) return;
       if (!isField(e.target)) e.preventDefault();
     });
     document.addEventListener('cut', function (e) {
+      if (!kunciAktif()) return;
       if (!isField(e.target)) e.preventDefault();
     });
     document.addEventListener('contextmenu', function (e) {
+      if (!kunciAktif()) return;
       if (!isField(e.target)) e.preventDefault();
     });
     document.addEventListener('dragstart', function (e) {
-      e.preventDefault();
+      if (kunciAktif()) e.preventDefault();
     });
     document.addEventListener('keydown', function (e) {
+      if (!kunciAktif()) return;
       var k = (e.key || '').toLowerCase();
       var kombinasi = (e.ctrlKey || e.metaKey) && ['c', 'x', 'a', 'u', 's', 'p'].indexOf(k) !== -1;
       if (kombinasi && !isField(e.target)) e.preventDefault();
@@ -569,14 +820,25 @@
     });
   }
 
-  /* ---------- deteksi meninggalkan halaman ---------- */
+  function pasangNavigasi() {
+    document.getElementById('btnKeLkpd').addEventListener('click', function () {
+      tampilHalaman(2);
+    });
+    document.getElementById('btnKembali').addEventListener('click', function () {
+      tampilHalaman(1);
+    });
+  }
+
+  /* ---------- deteksi meninggalkan halaman (hanya halaman 2) ---------- */
 
   function pasangDeteksiKeluar() {
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') {
-        resetSemua();
-        tandaiReset();
-      } else if (adaTandaReset()) {
+        if (kunciAktif()) {
+          resetSemua();
+          tandaiReset();
+        }
+      } else if (kunciAktif() && adaTandaReset()) {
         peringatanAktif = false;
         tampilPeringatan(
           'Kamu keluar dari halaman',
@@ -586,8 +848,10 @@
     });
 
     window.addEventListener('pagehide', function () {
-      resetSemua();
-      tandaiReset();
+      if (kunciAktif()) {
+        resetSemua();
+        tandaiReset();
+      }
     });
 
     document.getElementById('btnOke').addEventListener('click', tutupPeringatan);
@@ -599,14 +863,26 @@
   buatLkpd();
   bindSalin();
   pasangPelindungSalin();
+  pasangNavigasi();
   pasangDeteksiKeluar();
 
   if (adaTandaReset()) {
+    tampilHalaman(2);
     tampilPeringatan(
       'Kamu keluar dari halaman',
       'Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.'
     );
+  } else {
+    tampilHalaman(1);
   }
+
+  document.addEventListener('pointermove', function (e) {
+    var kartu = e.target && e.target.closest ? e.target.closest('.glass') : null;
+    if (!kartu) return;
+    var r = kartu.getBoundingClientRect();
+    kartu.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    kartu.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
 })();
 </script>
 
@@ -637,6 +913,10 @@
   var waktuHpTerlihat = 0;
   var terpicu = false;
 
+  function halamanKunci() {
+    return document.body.dataset.halaman === '2';
+  }
+
   document.addEventListener('peringatan-ditutup', function () {
     terpicu = false;
     waktuWajahHilang = 0;
@@ -644,6 +924,7 @@
   });
 
   function picu(judul, pesan) {
+    if (!halamanKunci()) return;
     if (terpicu) return;
     terpicu = true;
     if (typeof window.tampilPeringatanKamera === 'function') {
@@ -652,6 +933,7 @@
   }
 
   function cekKamera() {
+    if (!halamanKunci()) return;
     if (!faceDetector || !objectDetector || video.readyState < 2) return;
     var ts = performance.now();
 
@@ -697,6 +979,7 @@
   }
 
   async function siapkanDeteksi() {
+    if (faceDetector && objectDetector) return;
     var vision = await FilesetResolver.forVisionTasks(
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
     );
@@ -717,7 +1000,18 @@
     });
   }
 
+  function hentikanKamera() {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+    video.srcObject = null;
+    video.hidden = true;
+    waktuWajahHilang = 0;
+    waktuHpTerlihat = 0;
+    terpicu = false;
+  }
+
   async function mulaiKamera() {
+    if (stream) return;
     btnKamera.hidden = true;
     statusKamera.textContent = 'Meminta izin kamera...';
 
@@ -734,9 +1028,16 @@
       statusKamera.textContent = 'Memuat model deteksi...';
       await siapkanDeteksi();
       await video.play();
+
+      if (!halamanKunci()) {
+        hentikanKamera();
+        return;
+      }
+
       statusKamera.textContent = 'Kamera aktif. Mendeteksi wajah dan ponsel...';
       timer = setInterval(cekKamera, INTERVAL_DETEKSI_MS);
     } catch (err) {
+      if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
       statusKamera.textContent = 'Kamera tidak bisa dibuka: ' + (err && err.message ? err.message : err);
       btnKamera.hidden = false;
     }
@@ -744,12 +1045,21 @@
 
   btnKamera.addEventListener('click', mulaiKamera);
 
-  window.addEventListener('pagehide', function () {
-    if (timer) clearInterval(timer);
-    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+  // Kamera hanya diminta saat halaman 2 dibuka, dan dimatikan saat kembali ke halaman 1
+  document.addEventListener('halaman-berubah', function (e) {
+    if (e.detail === 2) {
+      mulaiKamera();
+    } else {
+      hentikanKamera();
+      statusKamera.textContent = 'Kamera mati. Buka halaman 2 untuk mengaktifkannya.';
+    }
   });
 
-  mulaiKamera();
+  window.addEventListener('pagehide', hentikanKamera);
+
+  if (halamanKunci()) {
+    mulaiKamera();
+  }
 </script>
 </body>
 </html>
