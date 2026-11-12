@@ -389,6 +389,27 @@
   }
   .btn-oke:hover { transform: scale(1.04); }
 
+  /* Gambar contoh langkah */
+  figure.shot {
+    margin: 12px 0 6px;
+    padding: 10px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--line);
+  }
+  figure.shot img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  figure.shot figcaption {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
   @media (max-width: 600px) {
     .kamera-kecil { width: 120px; }
     section.card { padding: 20px; }
@@ -521,15 +542,22 @@
         <li>Buka Microsoft Word atau Google Docs, lalu buat dokumen baru.</li>
         <li>Tulis data dirimu dengan urutan berikut: <strong>Nama</strong> lengkap, <strong>Umur</strong>, dan <strong>Hobi</strong>.</li>
         <li>Masukkan satu <strong>Foto</strong> dirimu. Di Word pilih <strong>Insert &gt; Pictures</strong>. Di Google Docs pilih <strong>Insert &gt; Image &gt; Upload from computer</strong>.</li>
-        <li>Simpan sebagai PDF. Di Word pilih <strong>File &gt; Save As</strong>, lalu pilih format <strong>PDF</strong>. Di Google Docs pilih <strong>File &gt; Download &gt; PDF Document (.pdf)</strong>.</li>
+        <li>Simpan sebagai PDF. Di Word pilih <strong>File &gt; Save As</strong>, lalu pilih format <strong>PDF</strong>. Di Google Docs pilih <strong>File &gt; Download &gt; PDF Document (.pdf)</strong>.
+          <figure class="shot"><img src="gambar/docs-download.png" alt="Menu File, Download, lalu Dokumen PDF (.pdf) di Google Docs"><figcaption>Contoh: File &gt; Download &gt; Dokumen PDF (.pdf)</figcaption></figure>
+        </li>
         <li>Beri nama berkas <em>Data_Diri_Nama_Kelas.pdf</em>.</li>
       </ol>
 
       <span class="langkah-judul">Bagian 2 · Kunci PDF dengan kata sandi</span>
       <ol start="6">
-        <li>Buka situs <a href="https://www.ilovepdf.com/id/melindungi-pdf" target="_blank" rel="noopener">ILovePDF - Melindungi PDF</a>, lalu klik <strong>Pilih file PDF</strong> dan pilih berkas <em>Data_Diri_Nama_Kelas.pdf</em>.</li>
+        <li>Buka situs <a href="https://www.ilovepdf.com/id/melindungi-pdf" target="_blank" rel="noopener">ILovePDF - Melindungi PDF</a>, lalu klik <strong>Pilih file PDF</strong> dan pilih berkas <em>Data_Diri_Nama_Kelas.pdf</em>.
+          <figure class="shot"><img src="gambar/ilovepdf-awal.png" alt="Halaman awal ILovePDF"><figcaption>Halaman awal ILovePDF</figcaption></figure>
+          <figure class="shot"><img src="gambar/ilovepdf-pilih.png" alt="Halaman Proteksi file PDF di ILovePDF dengan tombol Pilih file PDF"><figcaption>Klik tombol <strong>Pilih file PDF</strong></figcaption></figure>
+        </li>
         <li>Isi kata sandi yang kuat pada kolom yang tersedia. Ingat kata sandi ini, karena kamu akan menulis clue-nya di Kegiatan C.</li>
-        <li>Klik <strong>Lindungi PDF</strong>, lalu unduh hasilnya. Beri nama <em>Data_Diri_Terkunci_Nama_Kelas.pdf</em>.</li>
+        <li>Klik <strong>Lindungi PDF</strong>, lalu unduh hasilnya. Beri nama <em>Data_Diri_Terkunci_Nama_Kelas.pdf</em>.
+          <figure class="shot"><img src="gambar/ilovepdf-selesai.png" alt="Pesan File PDF telah diproteksi dengan tombol Unduh PDF yang diproteksi"><figcaption>Setelah selesai, klik <strong>Unduh PDF yang diproteksi</strong></figcaption></figure>
+        </li>
         <li>Uji hasilnya: buka berkas terkunci tadi. Jika diminta kata sandi dan bisa dibuka dengan kata sandi itu, kunci berhasil.</li>
       </ol>
       <div class="note info">
@@ -580,16 +608,20 @@
       <ol>
         <li>Pasang WinRAR dari situs resminya jika belum ada.</li>
         <li>Di File Explorer, klik berkas pertama, tahan <strong>Ctrl</strong>, lalu klik berkas kedua sampai keduanya terpilih.</li>
-        <li>Klik kanan salah satu berkas yang terpilih, pilih <strong>WinRAR</strong>, lalu klik <strong>Add to archive...</strong>.</li>
+        <li>Klik kanan salah satu berkas yang terpilih, pilih <strong>WinRAR</strong>, lalu klik <strong>Add to archive...</strong>.
+          <figure class="shot"><img src="gambar/winrar-tambah.png" alt="Menu klik kanan, WinRAR, lalu Add to archive"><figcaption>Pilih <strong>WinRAR &gt; Add to archive...</strong></figcaption></figure>
+        </li>
         <li>Pada kolom <em>Archive name</em>, isi <em>Tugas9_Nama_Kelas.rar</em>. Pastikan <em>Archive format</em> adalah <strong>RAR</strong>.</li>
         <li><strong>Kosongkan</strong> bagian <em>Set password</em>. Arsip ini tidak diberi kata sandi.</li>
         <li>Klik <strong>OK</strong>. Arsip baru akan muncul.</li>
-        <li>Klik dua kali arsip agar terbuka di WinRAR, lalu pilih menu komentar arsip (di WinRAR biasanya ada di bawah menu <strong>Commands</strong>).</li>
+        <li>Klik dua kali arsip agar terbuka di WinRAR, lalu klik tombol <strong>Comment</strong> di toolbar atas.
+          <figure class="shot"><img src="gambar/winrar-komentar.png" alt="Jendela komentar arsip di WinRAR berisi tulisan clue password"><figcaption>Tulis clue di kotak <em>Archive comment</em>, lalu klik <strong>OK</strong></figcaption></figure>
+        </li>
         <li>Tulis <strong>clue</strong> kata sandi PDF-mu di kotak komentar, bukan kata sandinya. Contoh: <em>nama kucing pertamaku, huruf besar semua, diikuti tahun aku masuk SMA</em>. Lalu simpan komentar.</li>
         <li>Uji hasilnya: buka arsip dengan WinRAR, pastikan komentar clue terlihat, lalu pastikan kedua PDF di dalamnya bisa dibuka.</li>
         <li>Hapus kedua berkas asli di luar arsip jika tidak diperlukan.</li>
       </ol>
-      <p>Catatan: komentar arsip hanya bisa dibuat di WinRAR, bukan di 7-Zip. Jika menu komentar tidak terlihat, cek versi WinRAR kamu atau tanya gurumu.</p>
+      <p>Catatan: komentar arsip hanya bisa dibuat di WinRAR, bukan di 7-Zip. Jika tombol Comment tidak terlihat, tanya gurumu.</p>
     </section>
 
     <section class="card glass">
