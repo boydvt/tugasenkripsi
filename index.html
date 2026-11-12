@@ -36,8 +36,8 @@
     background-attachment: fixed;
     -webkit-touch-callout: auto;
   }
-  /* Anti-salin hanya aktif di halaman 2 (LKPD) */
-  body[data-halaman="2"] {
+  /* Anti-salin hanya aktif di halaman 3 (Kegiatan B dan C) */
+  body[data-halaman="3"] {
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
@@ -137,6 +137,21 @@
   ol, ul { padding-left: 22px; }
   strong { color: #000; }
   em { color: #262626; font-style: normal; font-weight: 700; text-decoration: underline; text-decoration-color: rgba(0,0,0,.25); text-underline-offset: 3px; }
+  a { color: #000; font-weight: 700; }
+
+  .langkah-judul {
+    display: inline-block;
+    margin: 18px 0 6px;
+    font-size: .9rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #111111;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.9);
+  }
 
   table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 10px 0; overflow: hidden; border-radius: 16px; border: 1px solid var(--line); }
   th, td { padding: 11px 14px; text-align: left; vertical-align: top; }
@@ -258,10 +273,11 @@
   .nav-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 10px;
     margin-top: 10px;
   }
+  .nav-row .kanan { margin-left: auto; }
 
   #status {
     margin-top: 12px;
@@ -398,10 +414,10 @@
 <div class="wrap">
 
   <div class="chip-row page-info">
-    <span class="chip" id="stepInfo">Halaman 1 dari 2</span>
+    <span class="chip" id="stepInfo">Halaman 1 dari 3</span>
   </div>
 
-  <!-- ================= HALAMAN 1: MATERI & KEGIATAN ================= -->
+  <!-- ================= HALAMAN 1: MATERI ================= -->
   <div id="page1">
 
     <header class="hero glass">
@@ -429,7 +445,7 @@
           </label>
         </div>
       </div>
-      <p class="tip info">Isian nama dan kelas dipakai untuk menyalin jawaban di halaman 2.</p>
+      <p class="tip info">Isian nama dan kelas dipakai untuk nama berkas dan untuk menyalin jawaban di halaman 3.</p>
     </section>
 
     <section class="card glass">
@@ -440,7 +456,7 @@
         <tr><td>Kelas</td><td>X (SMA)</td></tr>
         <tr><td>Alokasi waktu</td><td>2 JP (2 x 45 menit)</td></tr>
         <tr><td>Jenis tugas</td><td>Individu</td></tr>
-        <tr><td>Produk</td><td>Dokumen terenkripsi (berkas yang hanya bisa dibuka dengan kata sandi)</td></tr>
+        <tr><td>Produk</td><td>Arsip RAR berisi 2 berkas PDF dengan clue di komentar arsip</td></tr>
       </table>
       <p>Setelah praktik ini, kamu mampu menerapkan enkripsi sederhana dan konfigurasi keamanan dasar untuk melindungi data pribadi saat terhubung ke jaringan.</p>
     </section>
@@ -456,13 +472,15 @@
 
     <section class="card glass">
       <h2>📚 Konsep Dasar</h2>
-      <p>Enkripsi adalah proses mengacak data dengan kunci tertentu, sehingga hanya orang yang memegang kunci itu yang bisa membacanya. Pada dokumen Word atau PDF, kata sandi berperan sebagai kunci. Pada praktik ini kamu memakai AES-256, standar enkripsi yang banyak dipakai.</p>
+      <p>Enkripsi adalah proses mengacak data dengan kunci tertentu, sehingga hanya orang yang memegang kunci itu yang bisa membacanya. Pada berkas PDF, kata sandi berperan sebagai kunci. Pada praktik ini kamu memakai AES-256, standar enkripsi yang banyak dipakai.</p>
 
       <p><strong>Beberapa istilah yang perlu kamu pahami:</strong></p>
       <ul>
         <li><strong>Enkripsi:</strong> proses mengacak data agar hanya bisa dibaca dengan kunci yang benar.</li>
         <li><strong>Kata sandi (password):</strong> rangkaian karakter rahasia yang dipakai untuk membuka data atau akun.</li>
+        <li><strong>Clue kata sandi:</strong> petunjuk yang hanya kamu pahami untuk mengingat kata sandi, bukan kata sandinya sendiri.</li>
         <li><strong>AES-256:</strong> standar enkripsi dengan kunci 256 bit yang banyak dipakai.</li>
+        <li><strong>Arsip RAR:</strong> kumpulan beberapa berkas dalam satu berkas, yang bisa diberi komentar sebagai catatan di dalamnya.</li>
         <li><strong>Autentikasi dua langkah:</strong> verifikasi kedua selain kata sandi, misalnya kode yang dikirim ke ponsel.</li>
         <li><strong>Wi-Fi publik:</strong> jaringan nirkabel yang banyak dipakai orang, dan keamanannya sering tidak terjamin.</li>
         <li><strong>Firewall:</strong> penyaring lalu lintas data yang memblokir akses yang tidak diizinkan.</li>
@@ -472,7 +490,7 @@
       <p><strong>Hal yang perlu kamu ingat:</strong></p>
       <ul>
         <li><strong>Kata sandi kuat:</strong> minimal 12 karakter, campuran huruf besar, huruf kecil, angka, dan simbol. Jangan memakai tanggal lahir atau nama sendiri.</li>
-        <li><strong>Jangan menyimpan kata sandi di berkas yang sama</strong> dengan dokumen yang dienkripsi.</li>
+        <li><strong>Clue, bukan kata sandi:</strong> di komentar arsip, tulis clue kata sandi saja. Jangan tulis kata sandi aslinya.</li>
         <li><strong>Wi-Fi publik:</strong> hindari membuka data pribadi saat terhubung ke jaringan yang tidak kamu kenal, karena lalu lintas datamu bisa dipantau.</li>
         <li><strong>Keamanan perangkat:</strong> kunci layar dengan PIN atau sandi, perbarui sistem, dan aktifkan autentikasi dua langkah pada akun email.</li>
         <li><strong>Kata sandi yang lupa tidak bisa dipulihkan</strong> pada enkripsi seperti ini. Simpan kata sandi di tempat yang aman, misalnya di manajer kata sandi.</li>
@@ -480,84 +498,108 @@
     </section>
 
     <section class="card glass">
-      <h2>🛠️ Langkah Praktik</h2>
-      <p>Alat: Microsoft Word, LibreOffice Writer, atau Google Docs, dan 7-Zip (gratis). Nama menu bisa sedikit berbeda tergantung versi aplikasi.</p>
-
-      <h3>Kegiatan A: Enkripsi dokumen di Microsoft Word</h3>
-      <ol>
-        <li>Buka Microsoft Word, lalu pilih <strong>New &gt; Blank document</strong>.</li>
-        <li>Ketik contoh data pribadi, misalnya nama panggilan, kota, dan hobi. Jangan memasukkan data orang lain.</li>
-        <li>Simpan dulu dokumen dengan <strong>File &gt; Save As</strong>. Beri nama berkas, lalu klik <strong>Save</strong>.</li>
-        <li>Klik menu <strong>File</strong>.</li>
-        <li>Klik <strong>Info</strong>.</li>
-        <li>Klik tombol <strong>Protect Document</strong>, lalu pilih <strong>Encrypt with Password</strong>.</li>
-        <li>Pada kotak <em>Encrypt Document</em>, ketik kata sandi yang kuat, lalu klik <strong>OK</strong>.</li>
-        <li>Pada kotak <em>Confirm Password</em>, ketik ulang kata sandi yang sama, lalu klik <strong>OK</strong>.</li>
-        <li>Tekan <strong>Ctrl + S</strong> untuk menyimpan. Jika muncul pesan untuk mengganti berkas, klik <strong>Yes</strong>.</li>
-        <li>Tutup dokumen, lalu buka lagi dari File Explorer. Word akan meminta kata sandi. Jika kamu bisa membukanya dengan kata sandi tersebut, enkripsi berhasil.</li>
-      </ol>
-      <p>Jika kata sandi lupa, dokumen tidak bisa dibuka kembali. Simpan kata sandimu di tempat yang aman.</p>
-      <p>Catatan untuk LibreOffice Writer: pilih <strong>File &gt; Save As</strong>, centang <strong>Save with password</strong>, lalu isi kata sandi.</p>
-
-      <h3>Alternatif: Google Docs</h3>
-      <p>Google Docs tidak memiliki menu Protect Document atau fitur kata sandi untuk dokumen. Menu itu hanya ada di Microsoft Word. Karena itu, cara ini memakai dua langkah: unduh dokumen, lalu enkripsi berkasnya.</p>
-      <ol>
-        <li>Buka dokumen di Google Docs, lalu pilih <strong>File &gt; Download &gt; Microsoft Word (.docx)</strong>.</li>
-        <li>Simpan berkas hasil unduhan di folder yang kamu pilih.</li>
-        <li>Enkripsi berkas tersebut dengan langkah pada Kegiatan B.</li>
-      </ol>
-
-      <h3>Kegiatan B: Enkripsi berkas dengan 7-Zip</h3>
-      <ol>
-        <li>Pastikan 7-Zip sudah terpasang. Jika belum, unduh dan pasang dari situs resminya.</li>
-        <li>Siapkan satu berkas yang akan dienkripsi, misalnya dokumen dari Kegiatan A.</li>
-        <li>Klik kanan berkas, pilih <strong>7-Zip</strong>, lalu klik <strong>Add to archive...</strong>.</li>
-        <li>Pada jendela <em>Add to Archive</em>, di kolom <em>Archive format</em>, pilih <strong>zip</strong> atau <strong>7z</strong>.</li>
-        <li>Pada bagian <em>Encryption</em>, isi kolom <em>Enter password</em> dengan kata sandi yang kuat.</li>
-        <li>Isi kolom <em>Reenter password</em> dengan kata sandi yang sama.</li>
-        <li>Pada kolom <em>Encryption method</em>, pilih <strong>AES-256</strong>.</li>
-        <li>Klik <strong>OK</strong> dan tunggu proses selesai. Berkas arsip baru akan muncul.</li>
-        <li>Uji hasilnya: klik dua kali arsip, lalu coba buka berkas di dalamnya. Aplikasi akan meminta kata sandi. Jika berkas bisa dibuka dengan kata sandi itu, enkripsi berhasil.</li>
-        <li>Hapus berkas asli yang belum terenkripsi jika tidak diperlukan, agar data tidak tersimpan dalam bentuk biasa.</li>
-      </ol>
-      <p>Catatan: kolom <em>Encryption method</em> hanya tersedia jika format yang dipilih adalah zip atau 7z.</p>
-
-      <h3>Kegiatan C: Periksa konfigurasi keamanan dasar</h3>
-      <p>Centang setiap item yang sudah kamu terapkan di perangkatmu:</p>
+      <h2>🛡️ Cek keamanan perangkatmu</h2>
+      <p class="info">Centang item yang sudah kamu terapkan. Bagian ini hanya untuk dirimu sendiri dan tidak dikumpulkan.</p>
       <div id="checks"></div>
     </section>
 
     <div class="nav-row">
-      <button class="btn" id="btnKeLkpd" type="button">Lanjut ke LKPD →</button>
+      <span></span>
+      <button class="btn kanan" id="btnKeKegiatanA" type="button">Lanjut ke Kegiatan A →</button>
     </div>
   </div>
 
-  <!-- ================= HALAMAN 2: LKPD & PENGUMPULAN ================= -->
+  <!-- ================= HALAMAN 2: KEGIATAN A ================= -->
   <div id="page2" hidden>
 
     <section class="card glass">
+      <h2>🛠️ Kegiatan A: Buat dan kunci PDF data diri</h2>
+      <p>Alat: Microsoft Word atau Google Docs, Notepad (atau aplikasi catatan lain), dan situs <a href="https://www.ilovepdf.com/id/melindungi-pdf" target="_blank" rel="noopener">ILovePDF - Melindungi PDF</a>.</p>
+
+      <span class="langkah-judul">Bagian 1 · Buat PDF data diri</span>
+      <ol>
+        <li>Buka Microsoft Word atau Google Docs, lalu buat dokumen baru.</li>
+        <li>Tulis data dirimu dengan urutan berikut: <strong>Nama</strong> lengkap, <strong>Umur</strong>, dan <strong>Hobi</strong>.</li>
+        <li>Masukkan satu <strong>Foto</strong> dirimu. Di Word pilih <strong>Insert &gt; Pictures</strong>. Di Google Docs pilih <strong>Insert &gt; Image &gt; Upload from computer</strong>.</li>
+        <li>Simpan sebagai PDF. Di Word pilih <strong>File &gt; Save As</strong>, lalu pilih format <strong>PDF</strong>. Di Google Docs pilih <strong>File &gt; Download &gt; PDF Document (.pdf)</strong>.</li>
+        <li>Beri nama berkas <em>Data_Diri_Nama_Kelas.pdf</em>.</li>
+      </ol>
+
+      <span class="langkah-judul">Bagian 2 · Kunci PDF dengan kata sandi</span>
+      <ol start="6">
+        <li>Buka situs <a href="https://www.ilovepdf.com/id/melindungi-pdf" target="_blank" rel="noopener">ILovePDF - Melindungi PDF</a>, lalu klik <strong>Pilih file PDF</strong> dan pilih berkas <em>Data_Diri_Nama_Kelas.pdf</em>.</li>
+        <li>Isi kata sandi yang kuat pada kolom yang tersedia. Ingat kata sandi ini, karena kamu akan menulis clue-nya di Kegiatan C.</li>
+        <li>Klik <strong>Lindungi PDF</strong>, lalu unduh hasilnya. Beri nama <em>Data_Diri_Terkunci_Nama_Kelas.pdf</em>.</li>
+        <li>Uji hasilnya: buka berkas terkunci tadi. Jika diminta kata sandi dan bisa dibuka dengan kata sandi itu, kunci berhasil.</li>
+      </ol>
+      <div class="note info">
+        Catatan: ILovePDF adalah layanan online. Jangan mengunggah dokumen yang berisi data orang lain, dan gunakan foto yang kamu tidak keberatan dibagikan ke layanan tersebut.
+      </div>
+
+      <p>Jika kamu lupa kata sandi PDF, clue di komentar arsip (Kegiatan C) membantumu mengingatnya. Kata sandi yang benar-benar lupa tidak bisa dipulihkan.</p>
+    </section>
+
+    <div class="nav-row">
+      <button class="btn secondary" id="btnKembaliMateri" type="button">← Kembali ke materi</button>
+      <button class="btn kanan" id="btnKeKegiatanB" type="button">Lanjut ke Kegiatan B →</button>
+    </div>
+  </div>
+
+  <!-- ================= HALAMAN 3: KEGIATAN B, C & PENGUMPULAN ================= -->
+  <div id="page3" hidden>
+
+    <section class="card glass">
       <h2>📷 Pemantauan kamera</h2>
-      <p class="info">Kamera dipakai untuk memantau wajah dan mendeteksi ponsel selama kamu mengerjakan LKPD. Video tidak direkam dan tidak dikirim ke mana pun. Semua pemrosesan terjadi di browser ini.</p>
+      <p class="info">Kamera dipakai untuk memantau wajah dan mendeteksi ponsel selama kamu mengerjakan halaman ini. Video tidak direkam dan tidak dikirim ke mana pun. Semua pemrosesan terjadi di browser ini.</p>
       <button class="btn" id="btnKamera" type="button" hidden>Coba aktifkan kamera lagi</button>
       <div id="statusKamera" class="status-pill">Meminta izin kamera...</div>
     </section>
 
     <section class="card glass">
-      <h2>✍️ LKPD</h2>
-      <p>Jawab dengan kalimatmu sendiri. Jawabanmu tersimpan sementara selama halaman ini terbuka.</p>
+      <h2>✍️ Kegiatan B: Kerjakan LKPD lalu simpan sebagai PDF</h2>
+      <p>Kerjakan LKPD di Microsoft Word atau Google Docs, lalu simpan sebagai PDF bernama <em>LKPD_Nama_Kelas.pdf</em>.</p>
+
+      <span class="langkah-judul">Langkah</span>
+      <ol>
+        <li>Buka Microsoft Word atau Google Docs, lalu buat dokumen baru.</li>
+        <li>Tulis nama dan kelasmu di baris paling atas.</li>
+        <li>Jawab lima pertanyaan di bawah dengan kalimatmu sendiri. Kamu bisa menyalin draf dari kotak di bawah ini.</li>
+        <li>Simpan sebagai PDF. Di Word pilih <strong>File &gt; Save As</strong>, lalu pilih <strong>PDF</strong>. Di Google Docs pilih <strong>File &gt; Download &gt; PDF Document (.pdf)</strong>.</li>
+        <li>Beri nama berkas <em>LKPD_Nama_Kelas.pdf</em>.</li>
+      </ol>
+
+      <span class="langkah-judul">Pertanyaan LKPD</span>
       <div id="lkpd"></div>
     </section>
 
     <section class="card glass">
-      <h2>📤 Pengumpulan Tugas</h2>
-      <p>Ada dua cara mengumpulkan tugas:</p>
+      <h2>🗜️ Kegiatan C: Kumpulkan 2 berkas dalam arsip RAR</h2>
+      <p>Alat: WinRAR (untuk membuat arsip RAR dan menulis komentar). Siapkan 2 berkas: <em>Data_Diri_Terkunci_Nama_Kelas.pdf</em> (Kegiatan A) dan <em>LKPD_Nama_Kelas.pdf</em> (Kegiatan B). Arsip ini tidak diberi kata sandi. Clue kata sandi PDF ditulis sebagai komentar arsip.</p>
+
+      <span class="langkah-judul">Langkah</span>
       <ol>
-        <li><strong>Salin jawaban</strong>: klik tombol di bawah untuk menyalin semua jawaban LKPD beserta nama dan kelasmu. Tempel hasilnya ke Google Docs baru, lalu simpan dengan nama <em>Nama_Kelas_Tugas9</em>.</li>
-        <li><strong>Unggah berkas</strong>: unggah berkas terenkripsi hasil Kegiatan A atau B ke folder pengumpulan. Beri nama berkas dengan format <em>Nama_Kelas_Tugas9</em>.</li>
+        <li>Pasang WinRAR dari situs resminya jika belum ada.</li>
+        <li>Di File Explorer, klik berkas pertama, tahan <strong>Ctrl</strong>, lalu klik berkas kedua sampai keduanya terpilih.</li>
+        <li>Klik kanan salah satu berkas yang terpilih, pilih <strong>WinRAR</strong>, lalu klik <strong>Add to archive...</strong>.</li>
+        <li>Pada kolom <em>Archive name</em>, isi <em>Tugas9_Nama_Kelas.rar</em>. Pastikan <em>Archive format</em> adalah <strong>RAR</strong>.</li>
+        <li><strong>Kosongkan</strong> bagian <em>Set password</em>. Arsip ini tidak diberi kata sandi.</li>
+        <li>Klik <strong>OK</strong>. Arsip baru akan muncul.</li>
+        <li>Klik dua kali arsip agar terbuka di WinRAR, lalu pilih menu komentar arsip (di WinRAR biasanya ada di bawah menu <strong>Commands</strong>).</li>
+        <li>Tulis <strong>clue</strong> kata sandi PDF-mu di kotak komentar, bukan kata sandinya. Contoh: <em>nama kucing pertamaku, huruf besar semua, diikuti tahun aku masuk SMA</em>. Lalu simpan komentar.</li>
+        <li>Uji hasilnya: buka arsip dengan WinRAR, pastikan komentar clue terlihat, lalu pastikan kedua PDF di dalamnya bisa dibuka.</li>
+        <li>Hapus kedua berkas asli di luar arsip jika tidak diperlukan.</li>
+      </ol>
+      <p>Catatan: komentar arsip hanya bisa dibuat di WinRAR, bukan di 7-Zip. Jika menu komentar tidak terlihat, cek versi WinRAR kamu atau tanya gurumu.</p>
+    </section>
+
+    <section class="card glass">
+      <h2>📤 Pengumpulan Tugas</h2>
+      <ol>
+        <li><strong>Unggah arsip</strong>: unggah <em>Tugas9_Nama_Kelas.rar</em> ke folder pengumpulan di bawah.</li>
       </ol>
 
       <div class="note info">
-        Klik <strong>Salin jawaban</strong> sebelum membuka folder pengumpulan. Membuka tab lain akan mereset semua jawaban di halaman ini. Jangan mengunggah kata sandi di dalam berkas atau folder pengumpulan. Kirim kata sandi hanya lewat cara yang diminta gurumu.
+        Sebelum membuka folder pengumpulan, klik <strong>Salin jawaban</strong> agar draf jawabanmu tersimpan. Membuka tab lain akan mereset semua isian di halaman ini.
       </div>
 
       <button class="btn" id="btnSalin" type="button">📋 Salin semua jawaban</button>
@@ -567,7 +609,8 @@
     </section>
 
     <div class="nav-row">
-      <button class="btn secondary" id="btnKembali" type="button">← Kembali ke materi</button>
+      <button class="btn secondary" id="btnKembaliA" type="button">← Kembali ke Kegiatan A</button>
+      <span></span>
     </div>
   </div>
 
@@ -583,7 +626,7 @@
     'Mengapa kata sandi "password123" tidak aman? Tulis dua alasan.',
     'Sebutkan dua risiko jika kamu membuka data pribadi saat terhubung ke Wi-Fi publik.',
     'Berkas tugasmu berisi data pribadi dan akan dikirim ke guru. Jelaskan langkah yang kamu pilih agar hanya guru yang bisa membukanya, dan alasanmu memilih langkah itu.',
-    'Tuliskan urutan langkah enkripsi dokumen Word, mulai dari menu File sampai dokumen tersimpan.'
+    'Tuliskan urutan langkah membuat arsip RAR di WinRAR, mulai dari memilih berkas sampai komentar arsip tersimpan.'
   ];
 
   var CEKLIS = [
@@ -598,9 +641,9 @@
   var state = { nama: '', kelas: '', checks: [], jawaban: [] };
   var peringatanAktif = false;
 
-  // Pengamanan (peringatan, reset, anti-salin) hanya aktif di halaman 2
+  // Pengamanan (peringatan, reset, anti-salin) hanya aktif di halaman 3
   function kunciAktif() {
-    return document.body.dataset.halaman === '2';
+    return document.body.dataset.halaman === '3';
   }
 
   /* ---------- penyimpanan ---------- */
@@ -637,8 +680,9 @@
     document.body.dataset.halaman = String(n);
     document.getElementById('page1').hidden = n !== 1;
     document.getElementById('page2').hidden = n !== 2;
-    document.getElementById('kameraKecil').hidden = n !== 2;
-    document.getElementById('stepInfo').textContent = 'Halaman ' + n + ' dari 2';
+    document.getElementById('page3').hidden = n !== 3;
+    document.getElementById('kameraKecil').hidden = n !== 3;
+    document.getElementById('stepInfo').textContent = 'Halaman ' + n + ' dari 3';
     window.scrollTo(0, 0);
     document.dispatchEvent(new CustomEvent('halaman-berubah', { detail: n }));
   }
@@ -682,14 +726,14 @@
     document.dispatchEvent(new Event('peringatan-ditutup'));
   }
 
-  // Dipanggil dari modul kamera. Hanya berfungsi di halaman 2 dan tidak mereset jawaban.
+  // Dipanggil dari modul kamera. Hanya berfungsi di halaman 3 dan tidak mereset jawaban.
   window.tampilPeringatanKamera = function (judul, pesan) {
     if (!kunciAktif()) return;
     if (peringatanAktif) return;
     tampilPeringatan(judul, pesan);
   };
 
-  /* ---------- pelindung salin (halaman 2) ---------- */
+  /* ---------- pelindung salin (halaman 3) ---------- */
 
   function isField(t) {
     return !!(t && t.closest && t.closest('input, textarea'));
@@ -809,7 +853,7 @@
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(teks).then(function () {
-            tampilStatus('Jawaban sudah disalin. Tempel ke Google Docs baru, lalu unggah ke folder pengumpulan.');
+            tampilStatus('Jawaban sudah disalin. Tempel ke Google Docs baru, lalu unggah arsip RAR ke folder pengumpulan.');
           }, salinManual);
         } else {
           salinManual();
@@ -821,15 +865,21 @@
   }
 
   function pasangNavigasi() {
-    document.getElementById('btnKeLkpd').addEventListener('click', function () {
+    document.getElementById('btnKeKegiatanA').addEventListener('click', function () {
       tampilHalaman(2);
     });
-    document.getElementById('btnKembali').addEventListener('click', function () {
+    document.getElementById('btnKembaliMateri').addEventListener('click', function () {
       tampilHalaman(1);
+    });
+    document.getElementById('btnKeKegiatanB').addEventListener('click', function () {
+      tampilHalaman(3);
+    });
+    document.getElementById('btnKembaliA').addEventListener('click', function () {
+      tampilHalaman(2);
     });
   }
 
-  /* ---------- deteksi meninggalkan halaman (hanya halaman 2) ---------- */
+  /* ---------- deteksi meninggalkan halaman (hanya halaman 3) ---------- */
 
   function pasangDeteksiKeluar() {
     document.addEventListener('visibilitychange', function () {
@@ -867,7 +917,7 @@
   pasangDeteksiKeluar();
 
   if (adaTandaReset()) {
-    tampilHalaman(2);
+    tampilHalaman(3);
     tampilPeringatan(
       'Kamu keluar dari halaman',
       'Semua jawaban dan centang sudah direset. Silakan kerjakan ulang dari awal.'
@@ -914,7 +964,7 @@
   var terpicu = false;
 
   function halamanKunci() {
-    return document.body.dataset.halaman === '2';
+    return document.body.dataset.halaman === '3';
   }
 
   document.addEventListener('peringatan-ditutup', function () {
@@ -1045,13 +1095,13 @@
 
   btnKamera.addEventListener('click', mulaiKamera);
 
-  // Kamera hanya diminta saat halaman 2 dibuka, dan dimatikan saat kembali ke halaman 1
+  // Kamera hanya diminta saat halaman 3 dibuka, dan dimatikan saat pindah ke halaman lain
   document.addEventListener('halaman-berubah', function (e) {
-    if (e.detail === 2) {
+    if (e.detail === 3) {
       mulaiKamera();
     } else {
       hentikanKamera();
-      statusKamera.textContent = 'Kamera mati. Buka halaman 2 untuk mengaktifkannya.';
+      statusKamera.textContent = 'Kamera mati. Buka halaman 3 untuk mengaktifkannya.';
     }
   });
 
